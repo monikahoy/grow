@@ -7,25 +7,16 @@
  */
 
 import React from 'react';
-import type {Node} from 'react';
 import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 
-/* $FlowFixMe[missing-local-annot] The type annotation(s) required by Flow's
- * LTI update could not be added via codemod */
-const Section = ({children, title}): Node => {
-  return (
-    <View>
-      <Text style={[styles.sectionTitle]}>{title}</Text>
-      <Text style={[styles.sectionDescription]}>{children}</Text>
-    </View>
-  );
-};
-
-const App: () => Node = () => {
+const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.section}>
-        <Section title="Grow">a picture a day keep sad plants away</Section>
+        <Text style={styles.sectionTitle}>Grow</Text>
+        <Text style={styles.sectionDescription}>
+          a picture a day keeps sad plants at bay
+        </Text>
       </View>
     </SafeAreaView>
   );
