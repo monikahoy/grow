@@ -1,11 +1,12 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import StartScreen from './src/screens/StartScreen';
+import PlantList from './src/screens/PlantList';
 
 const App = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <StartScreen />
+      <PlantList />
     </SafeAreaView>
   );
 };
