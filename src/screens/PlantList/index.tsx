@@ -1,5 +1,5 @@
-import React, {useLayoutEffect} from 'react';
-import {View, Text, FlatList, Button} from 'react-native';
+import React from 'react';
+import {View, FlatList, Button} from 'react-native';
 import PlantItem from '../../components/PlantItem';
 
 const plants = [
@@ -13,12 +13,10 @@ const plants = [
 ];
 
 const renderItem = ({item}: any) => {
-  console.log('renderingItem', typeof item);
   return <PlantItem name={item.name} />;
 };
 
 const PlantList = () => {
-  console.log('running plantlist');
   return (
     <View style={{flex: 1}}>
       <FlatList data={plants} style={{flex: 1}} renderItem={renderItem} />
