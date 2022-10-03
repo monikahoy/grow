@@ -5,11 +5,9 @@ const AddPlant = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <Text>
-          Here will be a camera capture for taking a new plant picture
-        </Text>
+        <Text>View that shows updates and information about plant</Text>
       </View>
-      <Button title="*snapshot*" />
+      <Button title="New picture" />
     </SafeAreaView>
   );
 };
