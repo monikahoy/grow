@@ -1,13 +1,16 @@
 import React from 'react';
-import {Button, SafeAreaView, View, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, View, StyleSheet, Text} from 'react-native';
+import Button from '../../components/Button';
 
 const AddPlant = () => {
+  const onPress = () => console.log('pressing');
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
         <Text>Add a plant</Text>
       </View>
-      <Button title="Add plant" />
+      <Button disabled={false} title="New Plant" onPress={onPress} />
     </SafeAreaView>
   );
 };

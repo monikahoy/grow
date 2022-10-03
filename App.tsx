@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import StartScreen from './src/screens/StartScreen';
 import PlantList from './src/screens/PlantList';
+import AddPlant from './src/screens/AddPlant';
 
 const App = () => {
   return (
