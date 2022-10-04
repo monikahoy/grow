@@ -1,13 +1,20 @@
 import React from 'react';
-import {Button, SafeAreaView, View, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, View, StyleSheet, Text} from 'react-native';
+import Button from '../../components/Button';
 
-const AddPlant = () => {
+const ctaAddPicture = 'New picture';
+
+const PlantView = () => {
+  const onAddPicture = () => {
+    console.log('navigate to add picture');
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
         <Text>View that shows updates and information about plant</Text>
       </View>
-      <Button title="New picture" />
+      <Button disabled={false} onPress={onAddPicture} title={ctaAddPicture} />
     </SafeAreaView>
   );
 };
@@ -21,4 +28,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddPlant;
+export default PlantView;

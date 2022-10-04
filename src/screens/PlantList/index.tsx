@@ -4,6 +4,8 @@ import PlantItem from '../../components/PlantItem';
 import data from '../../../data.js';
 import Button from '../../components/Button';
 
+const ctaAddPlant = 'Add new plant';
+
 const PlantList = () => {
   const onAddPlant = () => {
     console.log('adding new plant');
@@ -16,7 +18,7 @@ const PlantList = () => {
   return (
     <View style={styles.container}>
       <FlatList data={data} renderItem={renderItem} />
-      <Button disabled={false} onPress={onAddPlant} title="add plant" />
+      <Button disabled={false} onPress={onAddPlant} title={ctaAddPlant} />
     </View>
   );
 };
