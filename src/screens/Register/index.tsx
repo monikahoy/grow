@@ -11,11 +11,12 @@ import TextInput from '../../components/TextInput';
 
 const emailInputPlaceholder = 'Email';
 const passwordPlaceholder = 'Password';
-const ctaLogin = 'Sign in';
+const confirmPasswordPlaceholder = 'Confirm password';
+const ctaRegister = 'Register';
 
-const Login = () => {
-  const onLogin = () => {
-    console.log('logging in');
+const Register = () => {
+  const onRegister = () => {
+    console.log('registering');
   };
 
   return (
@@ -27,14 +28,18 @@ const Login = () => {
             secureTextEntry={false}
           />
           <TextInput placeholder={passwordPlaceholder} secureTextEntry={true} />
+          <TextInput
+            placeholder={confirmPasswordPlaceholder}
+            secureTextEntry={true}
+          />
         </View>
-        <Button disabled={false} onPress={onLogin} title={ctaLogin} />
+        <Button disabled={false} onPress={onRegister} title={ctaRegister} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
 
-export default Login;
+export default Register;
 
 const styles = StyleSheet.create({
   container: {
