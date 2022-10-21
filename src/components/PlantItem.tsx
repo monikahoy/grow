@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, TouchableHighlight, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image} from 'react-native';
 
 interface PlantItem {
   name: string;

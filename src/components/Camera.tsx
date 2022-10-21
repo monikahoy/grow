@@ -64,7 +64,9 @@ const CameraCapture = ({uri}: CameraCaptureProps) => {
 
   const device = devices.back;
 
-  if (device == null) return <LoadingView />;
+  if (device == null) {
+    return <LoadingView />;
+  }
 
   if (cameraMode === 'capture') {
     return (
