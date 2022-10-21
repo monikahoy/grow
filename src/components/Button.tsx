@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient';
 
 interface ButtonProps {
   title: string;
-  disabled: boolean;
+  disabled?: boolean;
   onPress: () => void;
 }
 

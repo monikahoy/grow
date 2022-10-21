@@ -1,15 +1,11 @@
 import React from 'react';
-import {Button, SafeAreaView, View, StyleSheet, Text} from 'react-native';
+import {SafeAreaView, StyleSheet} from 'react-native';
+import CameraCapture from '../../components/Camera';
 
 const AddPlant = () => {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topContainer}>
-        <Text>
-          Here will be a camera capture for taking a new plant picture
-        </Text>
-      </View>
-      <Button title="*snapshot*" />
+      <CameraCapture />
     </SafeAreaView>
   );
 };
@@ -20,6 +16,7 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
+    backgroundColor: 'white',
   },
 });
 
