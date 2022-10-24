@@ -4,7 +4,8 @@ import Button from '../../components/Button';
 import CameraCapture from '../../components/Camera';
 
 const AddPlant = () => {
-  const onPress = () => console.log('pressing');
+  const onPress = () =>
+    console.log('When I press here there should be some logic to adding plant');
 
   return (
     <SafeAreaView style={styles.container}>

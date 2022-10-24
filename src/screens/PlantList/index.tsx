@@ -3,16 +3,29 @@ import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
 import data from '../../../data.js';
 import Button from '../../components/Button';
+import AddPlant from '../AddPlant';
+import AddPicture from '../AddPicture';
 
 const ctaAddPlant = 'Add new plant';
 
-const PlantList = () => {
+const PlantList = ({navigation}: any) => {
   const onAddPlant = () => {
-    console.log('adding new plant');
+    navigation.navigate(AddPlant);
+  };
+
+  const onGoToPlant = () => {
+    navigation.navigate(AddPicture);
   };
 
   const renderItem = ({item}: any) => {
-    return <PlantItem name={item.name} image={item.image} />;
+    return (
+      <PlantItem
+        id={item.id}
+        name={item.name}
+        image={item.image}
+        onPress={onGoToPlant}
+      />
+    );
   };
 
   return (
