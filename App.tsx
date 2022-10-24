@@ -1,14 +1,28 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
-import StartScreen from './src/screens/StartScreen';
-import PlantList from './src/screens/PlantList';
-import AddPlant from './src/screens/AddPlant';
+import SignedInStack from './src/navigation/SignedInStack';
+import SignedOutStack from './src/navigation/SignedOutStack';
+import {NavigationContainer} from '@react-navigation/native';
+import {auth} from './firebaseConfig';
+import {onAuthStateChanged} from 'firebase/auth';
 
 const App = () => {
+  const [signedIn, setSignedIn] = useState(false);
+
+  onAuthStateChanged(auth, user => {
+    if (user) {
+      setSignedIn(true);
+    } else {
+      setSignedIn(false);
+    }
+  });
+
   return (
-    <SafeAreaView style={styles.container}>
-      <PlantList />
-    </SafeAreaView>
+    <NavigationContainer>
+      <SafeAreaView style={styles.container}>
+        {signedIn ? <SignedInStack /> : <SignedOutStack />}
+      </SafeAreaView>
+    </NavigationContainer>
   );
 };
 
