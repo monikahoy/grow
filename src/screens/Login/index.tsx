@@ -10,7 +10,7 @@ import TextInput from '../../components/TextInput';
 
 const emailInputPlaceholder = 'Email';
 const passwordPlaceholder = 'Password';
-const ctaRegister = 'Register';
+const ctaSignIn = 'Sign in';
 import {auth} from '../../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
@@ -54,7 +54,7 @@ const Login = () => {
             onChangeText={setPassword}
           />
         </View>
-        <Button disabled={false} onPress={onLogin} title={ctaRegister} />
+        <Button disabled={false} onPress={onLogin} title={ctaSignIn} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
