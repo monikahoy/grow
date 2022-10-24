@@ -16,9 +16,9 @@ import {auth} from '../../../firebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 
 const Register = () => {
-  const [email, setEmail] = useState<string>('monikaalbh@gmail.com');
-  const [password, setPassword] = useState<string>('123456');
-  const [confirmPassword, setConfirmPassword] = useState<string>('123456');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [error, setError] = useState<string>();
 
   const validatePassword = () => {
