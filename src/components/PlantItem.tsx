@@ -1,20 +1,24 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
+import {TouchableHighlight} from 'react-native-gesture-handler';
 
-interface PlantItem {
+type PlantItem = {
   name: string;
   id: number;
   image: string;
-}
+  onPress: () => void;
+};
 
-export const PlantItem = ({name, image}: PlantItem) => {
+export const PlantItem = ({name, image, onPress}: PlantItem) => {
   return (
-    <View style={styles.container}>
-      <Image source={{uri: image}} style={styles.image} />
-      <View>
-        <Text style={styles.title}>{name}</Text>
+    <TouchableHighlight onPress={onPress} underlayColor="transparent">
+      <View style={styles.container}>
+        <Image source={{uri: image}} style={styles.image} />
+        <View>
+          <Text style={styles.title}>{name}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableHighlight>
   );
 };
 
