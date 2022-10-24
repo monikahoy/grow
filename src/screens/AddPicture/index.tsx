@@ -2,7 +2,7 @@ import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import CameraCapture from '../../components/Camera';
 
-const AddPlant = () => {
+const AddPicture = () => {
   return (
     <SafeAreaView style={styles.container}>
       <CameraCapture />
@@ -20,4 +20,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddPlant;
+export default AddPicture;

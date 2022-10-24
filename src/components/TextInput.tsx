@@ -2,8 +2,8 @@ import React from 'react';
 import {TextInput as RNTextInput, StyleSheet, View} from 'react-native';
 
 interface TextInputProps {
-  value: string;
-  onChangeText: () => void;
+  value: string | undefined;
+  onChangeText: (value: string) => void;
   placeholder?: string;
   secureTextEntry?: boolean;
 }

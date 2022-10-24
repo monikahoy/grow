@@ -4,31 +4,57 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import React from 'react';
-import {useForm} from 'react-hook-form';
+import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 
 const emailInputPlaceholder = 'Email';
 const passwordPlaceholder = 'Password';
-const ctaLogin = 'Sign in';
+const ctaSignIn = 'Sign in';
+import {auth} from '../../../firebaseConfig';
+import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const Login = () => {
+  const [email, setEmail] = useState<string>('monikaalbh@gmail.com');
+  const [password, setPassword] = useState<string>('123456');
+  const [error, setError] = useState<string>();
+
   const onLogin = () => {
-    console.log('logging in');
+    setError('');
+    if (email && password) {
+      // Login with email and password using firebase
+      signInWithEmailAndPassword(auth, email, password)
+        .then(res => {
+          console.log(res.user);
+          console.log('singing in');
+        })
+        .catch(err => {
+          console.log('error', err);
+          setError(err.message);
+        });
+    }
+    setEmail('');
+    setPassword('');
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView style={{flex: 1}}>
+      <KeyboardAvoidingView style={styles.keyboard}>
         <View style={styles.topContainer}>
           <TextInput
             placeholder={emailInputPlaceholder}
             secureTextEntry={false}
+            value={email}
+            onChangeText={setEmail}
           />
-          <TextInput placeholder={passwordPlaceholder} secureTextEntry={true} />
+          <TextInput
+            placeholder={passwordPlaceholder}
+            secureTextEntry={true}
+            value={password}
+            onChangeText={setPassword}
+          />
         </View>
-        <Button disabled={false} onPress={onLogin} title={ctaLogin} />
+        <Button disabled={false} onPress={onLogin} title={ctaSignIn} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -38,6 +64,9 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  keyboard: {
     flex: 1,
   },
   topContainer: {
