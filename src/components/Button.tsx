@@ -1,6 +1,8 @@
 import {StyleSheet, Text, TouchableHighlight} from 'react-native';
 import React from 'react';
+import Colors from '../theme/Colors';
 import LinearGradient from 'react-native-linear-gradient';
+import Fonts from '../theme/Fonts';
 
 interface ButtonProps {
   title: string;
@@ -35,11 +37,12 @@ const styles = StyleSheet.create({
     padding: 15,
     borderColor: 'transparent',
     borderRadius: 10,
+    marginHorizontal: 20,
   },
   text: {
-    color: 'white',
+    color: Colors.white,
     fontSize: 20,
-    fontWeight: 'bold',
+    fontFamily: Fonts.MONTSERRAT_REGULAR,
   },
 });
 

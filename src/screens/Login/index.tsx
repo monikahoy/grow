@@ -8,6 +8,8 @@ import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 
+import Colors from '../../theme/Colors';
+
 const emailInputPlaceholder = 'Email';
 const passwordPlaceholder = 'Password';
 const ctaSignIn = 'Sign in';
@@ -65,6 +67,7 @@ export default Login;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   keyboard: {
     flex: 1,
@@ -73,5 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
+    marginHorizontal: 10,
   },
 });

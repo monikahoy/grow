@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
 import {TouchableHighlight} from 'react-native-gesture-handler';
+import Colors from '../theme/Colors';
+import Fonts from '../theme/Fonts';
 
 type PlantItem = {
   name: string;
@@ -30,13 +32,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
+    backgroundColor: Colors.background,
   },
   detailsContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
   },
   title: {
-    color: 'black',
+    color: Colors.basicText,
+    fontFamily: Fonts.MONTSERRAT_REGULAR,
     fontSize: 18,
   },
   image: {

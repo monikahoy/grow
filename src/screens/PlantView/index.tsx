@@ -1,12 +1,14 @@
 import React from 'react';
 import {SafeAreaView, View, StyleSheet, Text} from 'react-native';
 import Button from '../../components/Button';
+import Colors from '../../theme/Colors';
+import AddPicture from '../AddPicture';
 
 const ctaAddPicture = 'New picture';
 
-const PlantView = () => {
+const PlantView = ({navigation}: any) => {
   const onAddPicture = () => {
-    console.log('navigate to add picture');
+    navigation.navigate(AddPicture);
   };
 
   return (
@@ -22,6 +24,7 @@ const PlantView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   topContainer: {
     flex: 1,
