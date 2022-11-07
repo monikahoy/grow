@@ -1,5 +1,7 @@
 import React from 'react';
 import {TextInput as RNTextInput, StyleSheet} from 'react-native';
+import Colors from '../theme/Colors';
+import Fonts from '../theme/Fonts';
 
 interface TextInputProps {
   value: string | undefined;
@@ -29,12 +31,13 @@ const styles = StyleSheet.create({
   textInput: {
     fontSize: 20,
     padding: 10,
-    color: '#000000',
     borderWidth: 1,
-    borderColor: '#ECEFF4',
+    borderColor: Colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'stretch',
+    fontFamily: Fonts.MONTSERRAT_REGULAR,
+    color: Colors.basicText,
     borderRadius: 8,
     marginBottom: 10,
   },
