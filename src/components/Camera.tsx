@@ -4,9 +4,11 @@ import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 
 const LoadingView = () => {
-  <View>
-    <Text>can't find device</Text>
-  </View>;
+  return (
+    <View>
+      <Text>can't find device</Text>
+    </View>
+  );
 };
 
 type CameraCaptureProps = {

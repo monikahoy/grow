@@ -1,23 +1,25 @@
 import React from 'react';
 import {View, Text, StyleSheet, Image} from 'react-native';
-import {TouchableHighlight} from 'react-native-gesture-handler';
+import {TouchableHighlight} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
 
 type PlantItem = {
   name: string;
+  date?: string;
   id: number;
   image: string;
   onPress: () => void;
 };
 
-export const PlantItem = ({name, image, onPress}: PlantItem) => {
+export const PlantItem = ({name, date, image, onPress}: PlantItem) => {
   return (
     <TouchableHighlight onPress={onPress} underlayColor="transparent">
       <View style={styles.container}>
         <Image source={{uri: image}} style={styles.image} />
-        <View>
+        <View style={styles.detailsContainer}>
           <Text style={styles.title}>{name}</Text>
+          <Text style={styles.date}>{date}</Text>
         </View>
       </View>
     </TouchableHighlight>
@@ -37,10 +39,17 @@ const styles = StyleSheet.create({
   detailsContainer: {
     flexDirection: 'column',
     alignItems: 'flex-start',
+    flex: 1,
   },
   title: {
     color: Colors.basicText,
-    fontFamily: Fonts.MONTSERRAT_REGULAR,
+    fontFamily: Fonts.titleFont,
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  date: {
+    color: Colors.secondaryText,
+    fontFamily: Fonts.subtitleFont,
     fontSize: 18,
   },
   image: {

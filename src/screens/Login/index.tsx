@@ -28,7 +28,7 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email, password)
         .then(res => {
           console.log(res.user);
-          console.log('singing in');
+          console.log('signing in');
         })
         .catch(err => {
           console.log('error', err);
@@ -76,6 +76,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
   },
 });

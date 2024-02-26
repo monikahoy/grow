@@ -23,6 +23,7 @@ const PlantList = ({navigation}: any) => {
       <PlantItem
         id={item.id}
         name={item.name}
+        date={item.date}
         image={item.image}
         onPress={onGoToPlant}
       />
@@ -49,6 +50,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContainer: {
-    margin: 10,
+    margin: 20,
   },
 });

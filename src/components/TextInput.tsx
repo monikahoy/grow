@@ -36,10 +36,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'stretch',
-    fontFamily: Fonts.MONTSERRAT_REGULAR,
+    fontFamily: Fonts.bodyFont,
     color: Colors.basicText,
     borderRadius: 8,
     marginBottom: 10,
+    backgroundColor: Colors.white,
   },
 });
 

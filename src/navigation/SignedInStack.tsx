@@ -5,7 +5,7 @@ import AddPicture from '../screens/AddPicture';
 import PlantList from '../screens/PlantList';
 import PlantView from '../screens/PlantView';
 import Colors from '../theme/Colors';
-import Fonts from '../theme/Fonts';
+import BasicFonts from '../theme/Fonts';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,8 +17,8 @@ const SignedInStack = () => {
         headerStyle: {backgroundColor: Colors.background},
         headerShadowVisible: false,
         headerTitleStyle: {
-          fontSize: 24,
-          fontFamily: Fonts.PACIFICO_REGULAR,
+          fontSize: 26,
+          fontFamily: BasicFonts.PACIFICO_REGULAR,
         },
       }}>
       <Stack.Screen name="Home" component={PlantList} />
