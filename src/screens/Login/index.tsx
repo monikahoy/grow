@@ -2,11 +2,13 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
+import Register from '../Register';
 
 import Colors from '../../theme/Colors';
 
@@ -16,7 +18,7 @@ const ctaSignIn = 'Sign in';
 import {auth} from '../../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
-const Login = () => {
+const Login = ({navigation}: any) => {
   const [email, setEmail] = useState<string>('monikaalbh@gmail.com');
   const [password, setPassword] = useState<string>('123456');
   const [error, setError] = useState<string>();
@@ -39,6 +41,10 @@ const Login = () => {
     setPassword('');
   };
 
+  const onNavigateToRegister = () => {
+    navigation.navigate(Register);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView style={styles.keyboard}>
@@ -57,6 +63,14 @@ const Login = () => {
           />
         </View>
         <Button disabled={false} onPress={onLogin} title={ctaSignIn} />
+        <View>
+          <Text>Or register</Text>
+          <Button
+            disabled={false}
+            onPress={onNavigateToRegister}
+            title={'here'}
+          />
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
