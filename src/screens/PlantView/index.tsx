@@ -3,10 +3,14 @@ import {SafeAreaView, View, StyleSheet, Text} from 'react-native';
 import Button from '../../components/Button';
 import Colors from '../../theme/Colors';
 import AddPicture from '../AddPicture';
+import Fonts from '../../theme/Fonts';
 
 const ctaAddPicture = 'New picture';
 
-const PlantView = ({navigation}: any) => {
+const PlantView = ({navigation, route}: any) => {
+  const data = route.params.item;
+  const {id} = data;
+
   const onAddPicture = () => {
     navigation.navigate(AddPicture);
   };
@@ -14,7 +18,8 @@ const PlantView = ({navigation}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <Text>View that shows updates and information about plant</Text>
+        <Text style={styles.title}>{data.name}</Text>
+        <Text style={styles.date}>{data.createdAt}</Text>
       </View>
       <Button disabled={false} onPress={onAddPicture} title={ctaAddPicture} />
     </SafeAreaView>
@@ -28,6 +33,25 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  title: {
+    color: Colors.basicText,
+    fontFamily: Fonts.titleFont,
+    fontSize: 20,
+    marginBottom: 10,
+  },
+  date: {
+    color: Colors.secondaryText,
+    fontFamily: Fonts.subtitleFont,
+    fontSize: 18,
+  },
+  image: {
+    height: 142,
+    width: 107,
+    borderRadius: 5,
+    marginRight: 20,
   },
 });
 
