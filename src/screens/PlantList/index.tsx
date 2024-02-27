@@ -1,31 +1,50 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
-import data from '../../../data.js';
 import Button from '../../components/Button';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
 import PlantView from '../PlantView';
+import {auth} from '../../../firebaseConfig.js';
+
+import {getUserPlantDataFromFirebase} from '../../../firebaseFunctions.ts';
 
 const ctaAddPlant = 'Add new plant';
 
 const PlantList = ({navigation}: any) => {
+  const [plantData, setPlantData] = useState([]);
+
   const onAddPlant = () => {
     navigation.navigate(AddPlant);
   };
 
-  const onGoToPlant = () => {
-    navigation.navigate(PlantView);
-  };
+  const userId = auth.currentUser && auth.currentUser.uid;
+
+  useEffect(() => {
+    const loadPlantData = async () => {
+      try {
+        const dbData = await getUserPlantDataFromFirebase(userId);
+        setPlantData(dbData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    loadPlantData();
+  }, [userId]);
 
   const renderItem = ({item}: any) => {
+    const onPressItem = function () {
+      navigation.navigate('PlantView', {item: item});
+    };
+
     return (
       <PlantItem
         id={item.id}
         name={item.name}
-        date={item.date}
-        image={item.image}
-        onPress={onGoToPlant}
+        date={item.createdAt}
+        image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pansies-1613418136.jpg?crop=0.8749172733289212xw:1xh;center,top&resize=980:*"
+        onPress={onPressItem}
       />
     );
   };
@@ -33,7 +52,7 @@ const PlantList = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={data}
+        data={plantData}
         renderItem={renderItem}
         style={styles.listContainer}
       />
