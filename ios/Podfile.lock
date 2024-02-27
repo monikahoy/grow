@@ -946,7 +946,7 @@ PODS:
   - React-Mapbuffer (0.73.2):
     - glog
     - React-debug
-  - react-native-safe-area-context (4.8.2):
+  - react-native-safe-area-context (4.9.0):
     - React-Core
   - React-nativeconfig (0.73.2)
   - React-NativeModulesApple (0.73.2):
@@ -1115,11 +1115,11 @@ PODS:
     - React-jsi (= 0.73.2)
     - React-logger (= 0.73.2)
     - React-perflogger (= 0.73.2)
-  - RNCAsyncStorage (1.21.0):
+  - RNCAsyncStorage (1.22.2):
     - React-Core
   - RNCMaskedView (0.1.11):
     - React
-  - RNGestureHandler (2.14.1):
+  - RNGestureHandler (2.15.0):
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1128,7 +1128,7 @@ PODS:
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
   - SocketRocket (0.6.1)
-  - VisionCamera (2.16.7):
+  - VisionCamera (2.16.8):
     - React
     - React-callinvoker
     - React-Core
@@ -1386,7 +1386,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 03644c063fc3621c9a4e8bf263a8150909129618
   React-logger: 66b168e2b2bee57bd8ce9e69f739d805732a5570
   React-Mapbuffer: 9ee041e1d7be96da6d76a251f92e72b711c651d6
-  react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
+  react-native-safe-area-context: b97eb6f9e3b7f437806c2ce5983f479f8eb5de4b
   React-nativeconfig: d753fbbc8cecc8ae413d615599ac378bbf6999bb
   React-NativeModulesApple: 964f4eeab1b4325e8b6a799cf4444c3fd4eb0a9c
   React-perflogger: 29efe63b7ef5fbaaa50ef6eaa92482f98a24b97e
@@ -1407,12 +1407,12 @@ SPEC CHECKSUMS:
   React-runtimescheduler: df8945a656356ff10f58f65a70820478bfcf33ad
   React-utils: f5bc61e7ea3325c0732ae2d755f4441940163b85
   ReactCommon: 45b5d4f784e869c44a6f5a8fad5b114ca8f78c53
-  RNCAsyncStorage: 618d03a5f52fbccb3d7010076bc54712844c18ef
+  RNCAsyncStorage: 014a78b2cc8cc107c9e92ee428dc0c1ac3223416
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
-  RNGestureHandler: 25b969a1ffc806b9f9ad2e170d4a3b049c6af85e
+  RNGestureHandler: deda62b8339496ba721a45e0f3e2d7a319932cee
   RNScreens: b582cb834dc4133307562e930e8fa914b8c04ef2
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  VisionCamera: 6298fcca67b3a898ddbd36458a3b5c95d1ea739c
+  VisionCamera: 0a6794d1974aed5d653d0d0cb900493e2583e35a
   Yoga: e64aa65de36c0832d04e8c7bd614396c77a80047
 
 PODFILE CHECKSUM: 78d2b0f172d23602efc226c363e35ea34dd8547a
