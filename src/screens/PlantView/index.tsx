@@ -9,7 +9,6 @@ const ctaAddPicture = 'New picture';
 
 const PlantView = ({navigation, route}: any) => {
   const data = route.params.item;
-  const {id} = data;
 
   const onAddPicture = () => {
     navigation.navigate(AddPicture);

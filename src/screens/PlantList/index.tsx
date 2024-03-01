@@ -4,7 +4,6 @@ import PlantItem from '../../components/PlantItem';
 import Button from '../../components/Button';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
-import PlantView from '../PlantView';
 import {auth} from '../../../firebaseConfig.js';
 
 import {getUserPlantDataFromFirebase} from '../../../firebaseFunctions.ts';
