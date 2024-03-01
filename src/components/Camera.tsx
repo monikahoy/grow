@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, RefObject} from 'react';
 import {StyleSheet, Text, View, Image} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
@@ -20,20 +20,21 @@ const CameraCapture = ({uri}: CameraCaptureProps) => {
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [photoUri, setPhotoUri] = useState(uri);
   const [cameraMode, setCameraMode] = useState(uri ? 'show' : 'capture');
-  const camera = useRef(null);
+  const camera: RefObject<any> = useRef(null);
   const devices = useCameraDevices();
   const image = useRef();
 
   useEffect(() => {
     (async () => {
       const status = await Camera.requestCameraPermission();
+      console.log('status', status);
       setHasPermission(status === 'authorized');
     })();
   }, []);
 
   const takePhoto = async () => {
     try {
-      if (camera.current === null) {
+      if (!camera.current) {
         throw new Error("Can't connect to camera");
       }
       console.log('taking photo');
