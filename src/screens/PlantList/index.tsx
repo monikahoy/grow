@@ -2,13 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
 import Button from '../../components/Button';
+import RoundButton from '../../components/RoundButton';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
 import {auth} from '../../../firebaseConfig.js';
 
-import {getUserPlantDataFromFirebase} from '../../../firebaseFunctions.ts';
+import {getUserPlantDataFromFirebase} from '../../../firebaseFunctions';
 
-const ctaAddPlant = 'Add new plant';
+const ctaAddPlant = 'New';
 
 const PlantList = ({navigation}: any) => {
   const [plantData, setPlantData] = useState([]);
@@ -55,7 +56,7 @@ const PlantList = ({navigation}: any) => {
         renderItem={renderItem}
         style={styles.listContainer}
       />
-      <Button disabled={false} onPress={onAddPlant} title={ctaAddPlant} />
+      <RoundButton onPress={onAddPlant} label={ctaAddPlant} />
     </View>
   );
 };
