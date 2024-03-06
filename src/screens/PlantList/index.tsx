@@ -23,7 +23,6 @@ const PlantList = ({navigation}: any) => {
     const loadPlantData = async () => {
       try {
         const dbData = await getUserPlantDataFromFirebase(userId);
-        console.log('dbData:', dbData);
         setPlantData(dbData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -37,6 +36,8 @@ const PlantList = ({navigation}: any) => {
     const onPressItem = function () {
       navigation.navigate('PlantView', {item: item});
     };
+
+    console.log('item', item);
 
     return (
       <PlantItem
