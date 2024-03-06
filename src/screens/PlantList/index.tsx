@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
-import Button from '../../components/Button';
 import RoundButton from '../../components/RoundButton';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
@@ -24,6 +23,7 @@ const PlantList = ({navigation}: any) => {
     const loadPlantData = async () => {
       try {
         const dbData = await getUserPlantDataFromFirebase(userId);
+        console.log('dbData:', dbData);
         setPlantData(dbData);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -31,7 +31,7 @@ const PlantList = ({navigation}: any) => {
     };
 
     loadPlantData();
-  }, [userId]);
+  }, [userId, plantData]);
 
   const renderItem = ({item}: any) => {
     const onPressItem = function () {
@@ -43,7 +43,7 @@ const PlantList = ({navigation}: any) => {
         id={item.id}
         name={item.name}
         date={item.createdAt}
-        image="https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/pansies-1613418136.jpg?crop=0.8749172733289212xw:1xh;center,top&resize=980:*"
+        image={item.photoURL}
         onPress={onPressItem}
       />
     );
