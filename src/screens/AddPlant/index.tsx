@@ -1,14 +1,19 @@
 import React from 'react';
 import {SafeAreaView, View, StyleSheet} from 'react-native';
-import Button from '../../components/Button';
 import CameraCapture from '../../components/Camera';
 import Colors from '../../theme/Colors';
 
-const AddPlant = () => {
+import {NavigationProp} from '@react-navigation/native';
+
+type AddPlantProps = {
+  navigation: NavigationProp<any>;
+};
+
+const AddPlant = ({navigation}: AddPlantProps) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
-        <CameraCapture />
+        <CameraCapture navigation={navigation} />
       </View>
     </SafeAreaView>
   );

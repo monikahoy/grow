@@ -6,6 +6,7 @@ import PlantList from '../screens/PlantList';
 import PlantView from '../screens/PlantView';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
+import CameraCapture from '../components/Camera';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,7 @@ const SignedInStack = () => {
         component={AddPicture}
         options={{title: 'Edit plant'}}
       />
+      <Stack.Screen name="CameraCapture" component={CameraCapture} />
     </Stack.Navigator>
   );
 };

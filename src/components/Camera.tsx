@@ -1,14 +1,30 @@
 import React, {useState, useEffect, useRef, RefObject} from 'react';
+import 'react-native-get-random-values';
 import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 import RoundButton from './RoundButton';
-import {getStorage, ref, uploadString, getDownloadURL} from 'firebase/storage';
+import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import {v4 as uuidv4} from 'uuid';
-import {updateDoc, doc} from 'firebase/firestore';
-import DeviceInfo from 'react-native-device-info';
-import {set} from 'firebase/database';
+import {collection, addDoc} from 'firebase/firestore';
 import Colors from '../theme/Colors';
+import {db, auth, storage} from '../../firebaseConfig';
+import {NavigationProp} from '@react-navigation/core';
+import plantNames from '../../plant-names';
+
+const getRandomPlantName = () => {
+  const randomIndex = Math.floor(Math.random() * plantNames.length);
+  return plantNames[randomIndex];
+};
+
+const formatDate = (date: Date): string => {
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+};
 
 const LoadingView = () => {
   return (
@@ -20,9 +36,10 @@ const LoadingView = () => {
 
 type CameraCaptureProps = {
   uri?: string;
+  navigation: NavigationProp<any>;
 };
 
-const CameraCapture = ({uri}: CameraCaptureProps) => {
+const CameraCapture = ({uri, navigation}: CameraCaptureProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [photoUri, setPhotoUri] = useState(uri);
@@ -34,11 +51,10 @@ const CameraCapture = ({uri}: CameraCaptureProps) => {
 
   useEffect(() => {
     (async () => {
-      setIsLoading(true); // Mark loading as started
+      setIsLoading(true);
       const status = await Camera.requestCameraPermission();
       setHasPermission(status === 'authorized');
-      setIsLoading(false); // Mark loading as complete
-      console.log('loading complete');
+      setIsLoading(false);
     })();
   }, []);
 
@@ -64,11 +80,59 @@ const CameraCapture = ({uri}: CameraCaptureProps) => {
   };
 
   const onRetake = () => {
-    setCameraMode('capture');
+    setIsLoading(true);
+
+    setTimeout(() => {
+      setCameraMode('capture');
+      setIsLoading(false);
+    }, 300);
   };
 
-  const onPressSave = () => {
-    console.log('saving picture');
+  const onSave = async () => {
+    setIsLoading(true);
+    try {
+      console.log('saving picture');
+
+      if (!photoUri) {
+        console.log('No photo to save.');
+        return;
+      }
+
+      // Step 1: Read the contents of the image file
+      const imageFile = await fetch(photoUri);
+      const imageBlob = await imageFile.blob();
+
+      const storageRef = ref(storage, `users/plants/photos/${uuidv4()}.jpg`);
+
+      await uploadBytes(storageRef, imageBlob);
+
+      // Get download URL
+      const downloadURL = await getDownloadURL(storageRef);
+
+      // Save Photo URL in Firestore
+      const userId = auth.currentUser && auth.currentUser.uid;
+      if (!userId) {
+        console.error('No user ID found.');
+        return;
+      }
+
+      // Create a reference to the 'plants' subcollection of the user
+      const plantsCollectionRef = collection(db, 'users', userId, 'plants');
+      const currentDate = new Date();
+
+      // Use addDoc to add a new plant document with a generated plantId
+      await addDoc(plantsCollectionRef, {
+        photoURL: downloadURL,
+        createdAt: formatDate(currentDate),
+        name: getRandomPlantName(),
+      });
+
+      navigation.navigate('Home');
+      setIsLoading(false);
+      console.log('Photo saved successfully.');
+    } catch (error) {
+      console.error('Error saving photo:', error);
+    }
   };
 
   if (isLoading) {
@@ -80,7 +144,7 @@ const CameraCapture = ({uri}: CameraCaptureProps) => {
       <>
         <View style={styles.buttonsContainer}>
           <Button onPress={onRetake} title="Retake" />
-          <Button title="Save" onPress={onPressSave} />
+          <Button title="Save" onPress={onSave} />
         </View>
         <View style={styles.topContainer}>
           <Image ref={image} source={{uri: photoUri}} style={styles.image} />
