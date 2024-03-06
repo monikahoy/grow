@@ -6,7 +6,7 @@ import Button from './Button';
 import RoundButton from './RoundButton';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import {v4 as uuidv4} from 'uuid';
-import {collection, addDoc} from 'firebase/firestore';
+import {collection, addDoc, updateDoc} from 'firebase/firestore';
 import Colors from '../theme/Colors';
 import {db, auth, storage} from '../../firebaseConfig';
 import {NavigationProp} from '@react-navigation/core';
@@ -121,10 +121,18 @@ const CameraCapture = ({uri, navigation}: CameraCaptureProps) => {
       const currentDate = new Date();
 
       // Use addDoc to add a new plant document with a generated plantId
-      await addDoc(plantsCollectionRef, {
+      const newPlantRef = await addDoc(plantsCollectionRef, {
         photoURL: downloadURL,
         createdAt: formatDate(currentDate),
         name: getRandomPlantName(),
+      });
+
+      // Get the ID of the newly created document
+      const newPlantId = newPlantRef.id;
+
+      // Update the document with the extracted ID
+      await updateDoc(newPlantRef, {
+        id: newPlantId,
       });
 
       navigation.navigate('Home');
