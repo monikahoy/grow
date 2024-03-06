@@ -1,11 +1,11 @@
 import React from 'react';
-import {SafeAreaView, View, StyleSheet, Text} from 'react-native';
-import Button from '../../components/Button';
+import {SafeAreaView, View, StyleSheet, Text, Image} from 'react-native';
 import Colors from '../../theme/Colors';
 import AddPicture from '../AddPicture';
 import Fonts from '../../theme/Fonts';
+import RoundButton from '../../components/RoundButton';
 
-const ctaAddPicture = 'New picture';
+const ctaAddPicture = 'Add';
 
 const PlantView = ({navigation, route}: any) => {
   const data = route.params.item;
@@ -17,10 +17,13 @@ const PlantView = ({navigation, route}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
+        <Image source={{uri: data.photoURL}} style={styles.image} />
+      </View>
+      <View style={styles.detailsContainer}>
         <Text style={styles.title}>{data.name}</Text>
         <Text style={styles.date}>{data.createdAt}</Text>
       </View>
-      <Button disabled={false} onPress={onAddPicture} title={ctaAddPicture} />
+      <RoundButton onPress={onAddPicture} label={ctaAddPicture} />
     </SafeAreaView>
   );
 };
@@ -29,11 +32,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
+    paddingTop: 20,
   },
-  topContainer: {
+  detailsContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
+    backgroundColor: 'yellow',
   },
   title: {
     color: Colors.basicText,
@@ -47,10 +52,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   image: {
-    height: 142,
-    width: 107,
+    flex: 1,
+    height: '100%',
+    aspectRatio: 3 / 4,
     borderRadius: 5,
-    marginRight: 20,
+    marginVertical: 10,
+  },
+  topContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'pink',
+    alignContent: 'center',
   },
 });
 
