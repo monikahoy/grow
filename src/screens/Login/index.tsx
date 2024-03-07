@@ -62,14 +62,21 @@ const Login = ({navigation}: any) => {
             onChangeText={setPassword}
           />
         </View>
-        <Button disabled={false} onPress={onLogin} title={ctaSignIn} />
-        <View>
-          <Text>Or register</Text>
-          <Button
-            disabled={false}
-            onPress={onNavigateToRegister}
-            title={'here'}
-          />
+        <View style={styles.bottomContainer}>
+          <Button onPress={onLogin} title={ctaSignIn} />
+          <View
+            style={{
+              marginVertical: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text>Or register </Text>
+            <Button
+              onPress={onNavigateToRegister}
+              title={'here'}
+              style={{padding: 0}}
+            />
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -88,8 +95,14 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
+    flexGrow: 1,
     alignContent: 'center',
     justifyContent: 'center',
     marginHorizontal: 20,
+  },
+  bottomContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });
