@@ -56,7 +56,14 @@ const SignedInStack = () => {
           title: 'Home',
           headerShown: true,
           headerRight: () => (
-            <TouchableOpacity onPress={onSignOut}>
+            <TouchableOpacity
+              onPress={onSignOut}
+              hitSlop={{
+                top: 15,
+                bottom: 15,
+                left: 15,
+                right: 15,
+              }}>
               <Image
                 source={require('../../assets/icons/logout.png')}
                 style={{width: 16, height: 16}}
