@@ -6,7 +6,7 @@ import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
 import {auth} from '../../../firebaseConfig.js';
 
-import {getUserPlantDataFromFirebase} from '../../../firebaseFunctions';
+import {getUserPlantDataFromFirebase} from '../../../functions';
 
 const ctaAddPlant = 'New';
 
@@ -23,21 +23,25 @@ const PlantList = ({navigation}: any) => {
     const loadPlantData = async () => {
       try {
         const dbData = await getUserPlantDataFromFirebase(userId);
-        setPlantData(dbData);
+        setPlantData(prevPlantData => {
+          // Use the previous state to update the state, only if the data has changed to avoid infinite loops
+          if (JSON.stringify(prevPlantData) !== JSON.stringify(dbData)) {
+            return dbData;
+          }
+          return prevPlantData;
+        });
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
 
     loadPlantData();
-  }, [userId, plantData]);
+  }, [userId, plantData]); // plantData is used inside the effect but not in the dependencies array
 
   const renderItem = ({item}: any) => {
     const onPressItem = function () {
       navigation.navigate('PlantView', {item: item});
     };
-
-    console.log('item', item);
 
     return (
       <PlantItem
