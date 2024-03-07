@@ -4,27 +4,8 @@ import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 import RoundButton from './RoundButton';
-import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
-import {v4 as uuidv4} from 'uuid';
-import {collection, addDoc, updateDoc} from 'firebase/firestore';
 import Colors from '../theme/Colors';
-import {db, auth, storage} from '../../firebaseConfig';
 import {NavigationProp} from '@react-navigation/core';
-import plantNames from '../../plant-names';
-
-const getRandomPlantName = () => {
-  const randomIndex = Math.floor(Math.random() * plantNames.length);
-  return plantNames[randomIndex];
-};
-
-const formatDate = (date: Date): string => {
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
-};
 
 const LoadingView = () => {
   return (
@@ -37,13 +18,15 @@ const LoadingView = () => {
 type CameraCaptureProps = {
   uri?: string;
   navigation: NavigationProp<any>;
+  onCapture: (imageBlob: Blob) => void;
 };
 
-const CameraCapture = ({uri, navigation}: CameraCaptureProps) => {
+const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean>();
   const [photoUri, setPhotoUri] = useState(uri);
   const [cameraMode, setCameraMode] = useState(uri ? 'show' : 'capture');
+
   const [isLoading, setIsLoading] = useState(true); // New loading state
   const camera: RefObject<any> = useRef(null);
   const devices = useCameraDevices();
@@ -98,46 +81,12 @@ const CameraCapture = ({uri, navigation}: CameraCaptureProps) => {
         return;
       }
 
-      // Step 1: Read the contents of the image file
+      // Read the contents of the image file
       const imageFile = await fetch(photoUri);
+      // Make it into an image blob for the sake of firebase
       const imageBlob = await imageFile.blob();
-
-      const storageRef = ref(storage, `users/plants/photos/${uuidv4()}.jpg`);
-
-      await uploadBytes(storageRef, imageBlob);
-
-      // Get download URL
-      const downloadURL = await getDownloadURL(storageRef);
-
-      // Save Photo URL in Firestore
-      const userId = auth.currentUser && auth.currentUser.uid;
-      if (!userId) {
-        console.error('No user ID found.');
-        return;
-      }
-
-      // Create a reference to the 'plants' subcollection of the user
-      const plantsCollectionRef = collection(db, 'users', userId, 'plants');
-      const currentDate = new Date();
-
-      // Use addDoc to add a new plant document with a generated plantId
-      const newPlantRef = await addDoc(plantsCollectionRef, {
-        photoURL: downloadURL,
-        createdAt: formatDate(currentDate),
-        name: getRandomPlantName(),
-      });
-
-      // Get the ID of the newly created document
-      const newPlantId = newPlantRef.id;
-
-      // Update the document with the extracted ID
-      await updateDoc(newPlantRef, {
-        id: newPlantId,
-      });
-
-      navigation.navigate('Home');
+      onCapture(imageBlob); // send the imageblob to be handled by the function provided by the parent component
       setIsLoading(false);
-      console.log('Photo saved successfully.');
     } catch (error) {
       console.error('Error saving photo:', error);
     }
