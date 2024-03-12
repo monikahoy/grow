@@ -6,6 +6,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {auth} from './firebaseConfig';
 import {onAuthStateChanged} from 'firebase/auth';
 import Colors from './src/theme/Colors';
+import BootSplash from 'react-native-bootsplash';
 
 const App = () => {
   const [signedIn, setSignedIn] = useState(false);
@@ -19,7 +20,10 @@ const App = () => {
   });
 
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      onReady={() => {
+        BootSplash.hide();
+      }}>
       <SafeAreaView style={styles.container}>
         {signedIn ? <SignedInStack /> : <SignedOutStack />}
       </SafeAreaView>
