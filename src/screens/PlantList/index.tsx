@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
 import RoundButton from '../../components/RoundButton';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
-import {auth} from '../../../firebaseConfig.js';
 
-import {getUserPlantDataFromFirebase} from '../../../functions';
+import {getUserId, getUserPlantDataFromFirebase} from '../../../utils';
+import {useFocusEffect} from '@react-navigation/native';
 
 const ctaAddPlant = 'New';
 
@@ -17,27 +17,24 @@ const PlantList = ({navigation}: any) => {
     navigation.navigate(AddPlant);
   };
 
-  const userId = auth.currentUser && auth.currentUser.uid;
+  const userId = getUserId();
 
-  useEffect(() => {
-    const loadPlantData = async () => {
-      try {
-        const dbData = await getUserPlantDataFromFirebase(userId);
-        setPlantData(prevPlantData => {
-          // Use the previous state to update the state, only if the data has changed to avoid infinite loops
-          if (JSON.stringify(prevPlantData) !== JSON.stringify(dbData)) {
-            return dbData;
-          }
-          return prevPlantData;
-        });
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
+  const getData = useCallback(async () => {
+    // apply useCallback to getData without constant rerendering of the function
+    try {
+      const dbData = await getUserPlantDataFromFirebase(userId);
+      setPlantData(dbData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, [userId]);
 
-    loadPlantData();
-  }, [userId, plantData]); // plantData is used inside the effect but not in the dependencies array
-
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen comes into focus
+      getData();
+    }, [getData]),
+  );
   const renderItem = ({item}: any) => {
     const onPressItem = function () {
       navigation.navigate('PlantView', {item: item});

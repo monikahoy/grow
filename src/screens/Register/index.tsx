@@ -14,7 +14,7 @@ const confirmPasswordPlaceholder = 'Confirm password';
 const ctaRegister = 'Register';
 import {auth} from '../../../firebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {createUserInFirebase} from '../../../functions';
+import {createUserInFirebase, getUserId} from '../../../utils';
 
 const Register = () => {
   const [email, setEmail] = useState<string>('');
@@ -46,7 +46,7 @@ const Register = () => {
           setError(err.message);
         });
     }
-    const userId = auth.currentUser && auth.currentUser.uid;
+    const userId = getUserId();
     createUserInFirebase(userId);
     setEmail('');
     setPassword('');
