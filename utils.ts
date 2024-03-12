@@ -1,5 +1,5 @@
-import {setDoc, doc, getDocs, collection} from 'firebase/firestore';
-import {db} from './firebaseConfig';
+import {setDoc, doc, getDocs, collection, getDoc} from 'firebase/firestore';
+import {auth, db} from './firebaseConfig';
 import plantNames from './plant-names';
 
 // This function creates a new user in the 'users' collection in Firebase
@@ -21,8 +21,11 @@ export const createUserInFirebase = async (userId: string | null) => {
   }
 };
 
-// Get data from the 'users' collection in Firebase
+export const getUserId = () => {
+  return auth.currentUser ? auth.currentUser.uid : null;
+};
 
+// Get data from the 'users' collection in Firebase
 export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   if (!userId) {
     return null;
@@ -41,6 +44,33 @@ export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   } catch (error) {
     console.error('Error getting document:', error);
     throw error; // rethrow the error to be caught by the calling function
+  }
+};
+
+// Get data from the 'plants' document in Firebase
+export const getPlantDataFromFirebase = async (
+  userId: string | null,
+  plantId: string | null,
+) => {
+  if (!userId) {
+    return null;
+  }
+  if (!plantId) {
+    return null;
+  }
+
+  const collectionRef = doc(db, 'users', userId, 'plants', plantId);
+  try {
+    const documentSnapshot = await getDoc(collectionRef);
+
+    if (documentSnapshot.exists()) {
+      const plantData = documentSnapshot.data();
+      return plantData;
+    } else {
+      console.log('No such document!');
+    }
+  } catch (error) {
+    console.error('Error getting document:', error);
   }
 };
 
