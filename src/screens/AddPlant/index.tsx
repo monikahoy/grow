@@ -4,8 +4,8 @@ import CameraCapture from '../../components/Camera';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import {v4 as uuidv4} from 'uuid';
 import {collection, addDoc, updateDoc} from 'firebase/firestore';
-import {db, auth, storage} from '../../../firebaseConfig';
-import {formatDate, getRandomPlantName} from '../../../functions';
+import {db, storage} from '../../../firebaseConfig';
+import {formatDate, getRandomPlantName, getUserId} from '../../../utils';
 import Colors from '../../theme/Colors';
 
 import {NavigationProp} from '@react-navigation/native';
@@ -24,7 +24,7 @@ const AddPlant = ({navigation}: AddPlantProps) => {
     const downloadURL = await getDownloadURL(storageRef);
 
     // Save Photo URL in Firestore
-    const userId = auth.currentUser && auth.currentUser.uid;
+    const userId = getUserId();
     if (!userId) {
       console.error('No user ID found.');
       return;
@@ -41,7 +41,7 @@ const AddPlant = ({navigation}: AddPlantProps) => {
       name: getRandomPlantName(),
     });
 
-    // Get the ID of the newly created document
+    // Get the ID of the newly created document because we want to use it as the id for the plant
     const newPlantId = newPlantRef.id;
 
     // Update the document with the extracted ID
