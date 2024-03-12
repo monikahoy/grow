@@ -19,8 +19,8 @@ import {auth} from '../../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const Login = ({navigation}: any) => {
-  const [email, setEmail] = useState<string>('monikaalbh@gmail.com');
-  const [password, setPassword] = useState<string>('123456');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
 
   const onLogin = () => {
