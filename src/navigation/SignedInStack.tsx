@@ -73,19 +73,19 @@ const SignedInStack = () => {
         }}
       />
       <Stack.Screen
-        name="PlantView"
-        component={PlantView}
-        options={{title: 'Your plant'}}
-      />
-      <Stack.Screen
         name="AddPlant"
         component={AddPlant}
         options={{title: 'New plant'}}
       />
       <Stack.Screen
+        name="PlantView"
+        component={PlantView}
+        options={{title: 'Your plant'}}
+      />
+      <Stack.Screen
         name="AddPicture"
         component={AddPicture}
-        options={{title: 'Edit plant'}}
+        options={{title: 'Update plant'}}
       />
       <Stack.Screen name="CameraCapture" component={CameraCapture} />
     </Stack.Navigator>
