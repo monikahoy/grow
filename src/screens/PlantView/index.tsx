@@ -64,13 +64,9 @@ const PlantView = ({navigation, route}: any) => {
           {data.pictures &&
             data.pictures.map((picture: any, index: number) => {
               return (
-                <View style={styles.imageContainer}>
-                  <Image
-                    key={picture.url}
-                    source={{uri: picture.url}}
-                    style={styles.image}
-                  />
-                  <Text key={index} style={[styles.date, {fontSize: 16}]}>
+                <View style={styles.imageContainer} key={picture.url}>
+                  <Image source={{uri: picture.url}} style={styles.image} />
+                  <Text style={[styles.date, {fontSize: 16}]}>
                     {picture.createdAt}
                   </Text>
                 </View>

@@ -22,6 +22,7 @@ const TextInput = ({
       onChangeText={onChangeText}
       style={styles.textInput}
       placeholder={placeholder}
+      placeholderTextColor={Colors.placeholderText}
       secureTextEntry={secureTextEntry}
     />
   );
