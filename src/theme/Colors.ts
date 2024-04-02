@@ -6,14 +6,13 @@ const BasicColors = {
   blue: '#052D5F',
   darkBlue: '#010D1D',
   darkGrey: '#434C5E',
-  lightGrey: '#C8C8C8',
+  lightGrey: '#abacaa',
   lightBlue: '#F8FBFF',
   white: '#FCFCFC',
   purple: '#6835F2',
   darkpurple: '#1A084D',
   lightpurple: '#DFD4FE',
   purpleGradient: '#7E51F8',
-  //lightGrey: '#D2D3DB',
 };
 
 const NamedColors = {

@@ -7,6 +7,7 @@ import Colors from '../../theme/Colors';
 
 import {getUserId, getUserPlantDataFromFirebase} from '../../../utils';
 import {useFocusEffect} from '@react-navigation/native';
+import EmptyList from '../../components/EmptyList';
 
 const ctaAddPlant = 'New';
 
@@ -53,11 +54,15 @@ const PlantList = ({navigation}: any) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={plantData}
-        renderItem={renderItem}
-        style={styles.listContainer}
-      />
+      {plantData.length ? (
+        <FlatList
+          data={plantData}
+          renderItem={renderItem}
+          style={styles.listContainer}
+        />
+      ) : (
+        <EmptyList />
+      )}
       <RoundButton onPress={onAddPlant} label={ctaAddPlant} />
     </View>
   );
