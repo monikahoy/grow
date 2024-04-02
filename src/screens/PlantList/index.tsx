@@ -63,11 +63,6 @@ const PlantList = ({navigation}: any) => {
       ) : (
         <EmptyList />
       )}
-      <FlatList
-        data={plantData}
-        renderItem={renderItem}
-        style={styles.listContainer}
-      />
       <RoundButton onPress={onAddPlant} label={ctaAddPlant} />
     </View>
   );
