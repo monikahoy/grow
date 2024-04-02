@@ -2,11 +2,13 @@ import {
   KeyboardAvoidingView,
   SafeAreaView,
   StyleSheet,
+  Text,
   View,
 } from 'react-native';
 import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
+import Register from '../Register';
 
 import Colors from '../../theme/Colors';
 
@@ -16,9 +18,9 @@ const ctaSignIn = 'Sign in';
 import {auth} from '../../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
-const Login = () => {
-  const [email, setEmail] = useState<string>('monikaalbh@gmail.com');
-  const [password, setPassword] = useState<string>('123456');
+const Login = ({navigation}: any) => {
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
 
   const onLogin = () => {
@@ -28,7 +30,7 @@ const Login = () => {
       signInWithEmailAndPassword(auth, email, password)
         .then(res => {
           console.log(res.user);
-          console.log('singing in');
+          console.log('signing in');
         })
         .catch(err => {
           console.log('error', err);
@@ -37,6 +39,10 @@ const Login = () => {
     }
     setEmail('');
     setPassword('');
+  };
+
+  const onNavigateToRegister = () => {
+    navigation.navigate(Register);
   };
 
   return (
@@ -56,7 +62,22 @@ const Login = () => {
             onChangeText={setPassword}
           />
         </View>
-        <Button disabled={false} onPress={onLogin} title={ctaSignIn} />
+        <View style={styles.bottomContainer}>
+          <Button onPress={onLogin} title={ctaSignIn} />
+          <View
+            style={{
+              marginVertical: 40,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text>Or register </Text>
+            <Button
+              onPress={onNavigateToRegister}
+              title={'here'}
+              style={{padding: 0}}
+            />
+          </View>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -74,8 +95,14 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     flex: 1,
+    flexGrow: 1,
     alignContent: 'center',
     justifyContent: 'center',
-    marginHorizontal: 10,
+    marginHorizontal: 20,
+  },
+  bottomContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
 });

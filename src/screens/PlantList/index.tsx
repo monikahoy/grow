@@ -1,30 +1,52 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../../components/PlantItem';
-import data from '../../../data.js';
-import Button from '../../components/Button';
+import RoundButton from '../../components/RoundButton';
 import AddPlant from '../AddPlant';
 import Colors from '../../theme/Colors';
-import PlantView from '../PlantView';
 
-const ctaAddPlant = 'Add new plant';
+import {getUserId, getUserPlantDataFromFirebase} from '../../../utils';
+import {useFocusEffect} from '@react-navigation/native';
+
+const ctaAddPlant = 'New';
 
 const PlantList = ({navigation}: any) => {
+  const [plantData, setPlantData] = useState([]);
+
   const onAddPlant = () => {
     navigation.navigate(AddPlant);
   };
 
-  const onGoToPlant = () => {
-    navigation.navigate(PlantView);
-  };
+  const userId = getUserId();
 
+  const getData = useCallback(async () => {
+    // apply useCallback to getData without constant rerendering of the function
+    try {
+      const dbData = await getUserPlantDataFromFirebase(userId);
+      setPlantData(dbData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }, [userId]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // Refetch data when the screen comes into focus
+      getData();
+    }, [getData]),
+  );
   const renderItem = ({item}: any) => {
+    const onPressItem = function () {
+      navigation.navigate('PlantView', {item: item});
+    };
+
     return (
       <PlantItem
         id={item.id}
         name={item.name}
-        image={item.image}
-        onPress={onGoToPlant}
+        date={item.createdAt}
+        image={item.photoURL}
+        onPress={onPressItem}
       />
     );
   };
@@ -32,11 +54,11 @@ const PlantList = ({navigation}: any) => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={data}
+        data={plantData}
         renderItem={renderItem}
         style={styles.listContainer}
       />
-      <Button disabled={false} onPress={onAddPlant} title={ctaAddPlant} />
+      <RoundButton onPress={onAddPlant} label={ctaAddPlant} />
     </View>
   );
 };
@@ -49,6 +71,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContainer: {
-    margin: 10,
+    margin: 20,
   },
 });

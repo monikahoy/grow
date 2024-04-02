@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Colors from '../theme/Colors';
-import Fonts from '../theme/Fonts';
+import BasicFonts from '../theme/Fonts';
 
 import Login from '../screens/Login';
 import Register from '../screens/Register';
@@ -17,7 +17,7 @@ const SignedOutStack = () => {
         headerShadowVisible: false,
         headerTitleStyle: {
           fontSize: 24,
-          fontFamily: Fonts.PACIFICO_REGULAR,
+          fontFamily: BasicFonts.PACIFICO_REGULAR,
         },
       }}>
       <Stack.Screen name="Login" component={Login} />

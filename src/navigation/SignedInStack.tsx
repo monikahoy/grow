@@ -5,9 +5,37 @@ import AddPicture from '../screens/AddPicture';
 import PlantList from '../screens/PlantList';
 import PlantView from '../screens/PlantView';
 import Colors from '../theme/Colors';
-import Fonts from '../theme/Fonts';
+import BasicFonts from '../theme/Fonts';
+import CameraCapture from '../components/Camera';
+import {Alert, Image, Text, TouchableOpacity} from 'react-native';
+import {auth} from '../../firebaseConfig';
+import {signOut} from 'firebase/auth';
 
 const Stack = createNativeStackNavigator();
+
+const onSignOut = () => {
+  Alert.alert(
+    'Sign out',
+    'Are you sure you want to sign out?',
+    [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Sign out',
+        onPress: () => {
+          signOut(auth)
+            .then(() => {})
+            .catch(error => {
+              console.log('Error signing out:', error);
+            });
+        },
+      },
+    ],
+    {cancelable: false},
+  );
+};
 
 const SignedInStack = () => {
   return (
@@ -17,15 +45,32 @@ const SignedInStack = () => {
         headerStyle: {backgroundColor: Colors.background},
         headerShadowVisible: false,
         headerTitleStyle: {
-          fontSize: 24,
-          fontFamily: Fonts.PACIFICO_REGULAR,
+          fontSize: 26,
+          fontFamily: BasicFonts.PACIFICO_REGULAR,
         },
       }}>
-      <Stack.Screen name="Home" component={PlantList} />
       <Stack.Screen
-        name="PlantView"
-        component={PlantView}
-        options={{title: 'Your plant'}}
+        name="Home"
+        component={PlantList}
+        options={{
+          title: 'Home',
+          headerShown: true,
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={onSignOut}
+              hitSlop={{
+                top: 15,
+                bottom: 15,
+                left: 15,
+                right: 15,
+              }}>
+              <Image
+                source={require('../../assets/icons/logout.png')}
+                style={{width: 16, height: 16}}
+              />
+            </TouchableOpacity>
+          ),
+        }}
       />
       <Stack.Screen
         name="AddPlant"
@@ -33,10 +78,16 @@ const SignedInStack = () => {
         options={{title: 'New plant'}}
       />
       <Stack.Screen
+        name="PlantView"
+        component={PlantView}
+        options={{title: 'Your plant'}}
+      />
+      <Stack.Screen
         name="AddPicture"
         component={AddPicture}
-        options={{title: 'Edit plant'}}
+        options={{title: 'Update plant'}}
       />
+      <Stack.Screen name="CameraCapture" component={CameraCapture} />
     </Stack.Navigator>
   );
 };
