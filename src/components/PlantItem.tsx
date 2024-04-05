@@ -1,18 +1,52 @@
 import React from 'react';
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, Alert} from 'react-native';
 import {TouchableHighlight} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
+import {deleteDocumentFromFirebase, getUserId} from '../../utils';
 
 type PlantItem = {
   name: string;
   date?: string;
-  id: number;
+  id: string;
   image: string;
   onPress: () => void;
+  onDelete: () => void;
 };
 
-export const PlantItem = ({name, date, image, onPress}: PlantItem) => {
+export const PlantItem = ({
+  name,
+  date,
+  id,
+  image,
+  onPress,
+  onDelete,
+}: PlantItem) => {
+  const userId = getUserId();
+  if (!userId) {
+    // handle error
+    return;
+  }
+
+  const deletePlant = async () => {
+    // Delete plant from Firebase
+    await deleteDocumentFromFirebase(userId, id);
+    onDelete();
+  };
+
+  const onPressDelete = async () => {
+    Alert.alert('Delete Plant', 'Are you sure you want to delete this plant?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        onPress: () => deletePlant(),
+      },
+    ]);
+  };
+
   return (
     <TouchableHighlight onPress={onPress} underlayColor="transparent">
       <View style={styles.container}>
@@ -21,6 +55,12 @@ export const PlantItem = ({name, date, image, onPress}: PlantItem) => {
           <Text style={styles.title}>{name}</Text>
           <Text style={styles.date}>{date}</Text>
         </View>
+        <TouchableHighlight onPress={onPressDelete} underlayColor="transparent">
+          <Image
+            source={require('../../assets/icons/icon_delete.png')}
+            style={{width: 16, height: 16}}
+          />
+        </TouchableHighlight>
       </View>
     </TouchableHighlight>
   );

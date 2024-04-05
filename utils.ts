@@ -1,4 +1,11 @@
-import {setDoc, doc, getDocs, collection, getDoc} from 'firebase/firestore';
+import {
+  setDoc,
+  doc,
+  getDocs,
+  collection,
+  getDoc,
+  deleteDoc,
+} from 'firebase/firestore';
 import {auth, db} from './firebaseConfig';
 import plantNames from './plant-names';
 
@@ -44,6 +51,25 @@ export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   } catch (error) {
     console.error('Error getting document:', error);
     throw error; // rethrow the error to be caught by the calling function
+  }
+};
+
+export const deleteDocumentFromFirebase = async (
+  userId: string | null,
+  plantId: string | null,
+) => {
+  if (!userId) {
+    return;
+  }
+  if (!plantId) {
+    return;
+  }
+
+  const collectionRef = doc(db, 'users', userId, 'plants', plantId);
+  try {
+    await deleteDoc(collectionRef);
+  } catch (error) {
+    console.error('Error deleting document:', error);
   }
 };
 

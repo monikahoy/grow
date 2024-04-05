@@ -30,6 +30,11 @@ const PlantList = ({navigation}: any) => {
     }
   }, [userId]);
 
+  const onDeleteItem = () => {
+    // Refetch data after deleting
+    getData();
+  };
+
   useFocusEffect(
     useCallback(() => {
       // Refetch data when the screen comes into focus
@@ -48,6 +53,7 @@ const PlantList = ({navigation}: any) => {
         date={item.createdAt}
         image={item.photoURL}
         onPress={onPressItem}
+        onDelete={onDeleteItem}
       />
     );
   };
