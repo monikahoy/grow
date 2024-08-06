@@ -1,6 +1,12 @@
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
+You can use it to track the health of your plants, and see their growth. The app also gives your plants names. 
+
+| ![IMG_7746](https://github.com/user-attachments/assets/7ae09900-dad7-4200-a604-7fe12e2943b9) | ![IMG_7750](https://github.com/user-attachments/assets/e724fbdd-0720-47d8-bb73-bfe8a7520c9c) | ![IMG_7749](https://github.com/user-attachments/assets/746f2c31-aa9b-493b-a30b-2fc59285af6b) | ![IMG_7752](https://github.com/user-attachments/assets/020e300c-8e63-4b1a-8231-792fc1569a15) |
+|---|---|---|---|
+
 # Getting Started
+
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
 
