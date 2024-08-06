@@ -18,9 +18,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "grow-appTests.xctest"
-               BlueprintName = "grow-appTests"
-               ReferencedContainer = "container:grow-app.xcodeproj">
+               BuildableName = "growTests.xctest"
+               BlueprintName = "growTests"
+               ReferencedContainer = "container:grow.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

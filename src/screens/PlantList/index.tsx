@@ -11,8 +11,15 @@ import EmptyList from '../../components/EmptyList';
 
 const ctaAddPlant = 'New';
 
+type Plant = {
+  id: string;
+  name: string;
+  createdAt: string; // Date in string format
+  photoURL: string;
+};
+
 const PlantList = ({navigation}: any) => {
-  const [plantData, setPlantData] = useState([]);
+  const [plantData, setPlantData] = useState<Plant[]>([]);
 
   const onAddPlant = () => {
     navigation.navigate(AddPlant);
@@ -21,10 +28,17 @@ const PlantList = ({navigation}: any) => {
   const userId = getUserId();
 
   const getData = useCallback(async () => {
-    // apply useCallback to getData without constant rerendering of the function
     try {
-      const dbData = await getUserPlantDataFromFirebase(userId);
-      setPlantData(dbData);
+      const dbData: Plant[] = await getUserPlantDataFromFirebase(userId);
+      // Sort data by the first name alphabetically
+      const sortedData = dbData.sort((a, b) => {
+        const nameA = a.name.toUpperCase(); // Convert to uppercase to ensure case-insensitive comparison
+        const nameB = b.name.toUpperCase();
+        if (nameA < nameB) return -1;
+        if (nameA > nameB) return 1;
+        return 0;
+      });
+      setPlantData(sortedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
