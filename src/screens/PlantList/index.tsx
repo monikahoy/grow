@@ -61,14 +61,16 @@ const PlantList = ({navigation}: any) => {
     };
 
     return (
-      <PlantItem
-        id={item.id}
-        name={item.name}
-        date={item.createdAt}
-        image={item.photoURL}
-        onPress={onPressItem}
-        onDelete={onDeleteItem}
-      />
+      <View style={{marginHorizontal: 20}}>
+        <PlantItem
+          id={item.id}
+          name={item.name}
+          date={item.createdAt}
+          image={item.photoURL}
+          onPress={onPressItem}
+          onDelete={onDeleteItem}
+        />
+      </View>
     );
   };
 
@@ -96,6 +98,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContainer: {
-    margin: 20,
+    marginVertical: 20,
   },
 });
