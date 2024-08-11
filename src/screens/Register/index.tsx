@@ -34,15 +34,11 @@ const Register = () => {
   };
 
   const onRegister = () => {
-    console.log('registering');
     setError('');
     if (email && validatePassword()) {
       createUserWithEmailAndPassword(auth, email, password)
-        .then(res => {
-          console.log(res.user);
-        })
+        .then(res => {})
         .catch(err => {
-          console.log('error', err);
           setError(err.message);
         });
     }

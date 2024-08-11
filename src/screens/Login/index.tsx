@@ -28,12 +28,9 @@ const Login = ({navigation}: any) => {
     if (email && password) {
       // Login with email and password using firebase
       signInWithEmailAndPassword(auth, email, password)
-        .then(res => {
-          console.log(res.user);
-          console.log('signing in');
-        })
+        .then(res => {})
         .catch(err => {
-          console.log('error', err);
+          console.error(err);
           setError(err.message);
         });
     }

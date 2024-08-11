@@ -4,7 +4,6 @@ import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 import RoundButton from './RoundButton';
-import Colors from '../theme/Colors';
 import {NavigationProp} from '@react-navigation/core';
 
 const LoadingView = () => {
@@ -58,7 +57,7 @@ const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
       setIsCapturing(false);
       setIsLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -74,10 +73,7 @@ const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
   const onSave = async () => {
     setIsLoading(true);
     try {
-      console.log('saving picture');
-
       if (!photoUri) {
-        console.log('No photo to save.');
         return;
       }
 
@@ -87,9 +83,7 @@ const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
       const imageBlob = await imageFile.blob();
       onCapture(imageBlob); // send the imageblob to be handled by the function provided by the parent component
       setIsLoading(false);
-    } catch (error) {
-      console.error('Error saving photo:', error);
-    }
+    } catch (error) {}
   };
 
   if (isLoading) {
