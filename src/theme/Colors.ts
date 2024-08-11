@@ -20,6 +20,7 @@ const NamedColors = {
   background: BasicColors.lightBlue,
   buttonBackground: BasicColors.purple,
   inactiveButtonBackground: BasicColors.lightpurple,
+  plainButtonText: BasicColors.purple,
   border: BasicColors.lightGrey,
   // Text
   basicText: BasicColors.darkBlue,
