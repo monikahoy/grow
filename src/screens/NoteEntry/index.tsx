@@ -27,8 +27,8 @@ const CONFIRM_CANCEL = 'No, I want to stay';
 const screenHeight = Dimensions.get('window').height;
 
 const NoteEntry = ({navigation, route}: any) => {
-  const {plantId, updateId} = route.params.params.data; // had to handle nested navigator, why there is params 2 times
-  const [text, setText] = useState('');
+  const {plantId, updateId, note} = route.params.params.data; // had to handle nested navigator, why there is params 2 times
+  const [text, setText] = useState(note);
 
   const onChangeText = (text: string) => {
     setText(text);
@@ -76,7 +76,7 @@ const NoteEntry = ({navigation, route}: any) => {
   };
 
   const handleOnDelete = async () => {
-    console.log('Delete note');
+    // add delete note functionality
   };
 
   const handleOnCancel = () => {
@@ -101,6 +101,7 @@ const NoteEntry = ({navigation, route}: any) => {
             placeholder={placeholder}
             multiline={true}
             style={styles.textInput}
+            value={text}
           />
           <View style={styles.buttonContainer}>
             <Button onPress={handleOnNoteEntry} title={SAVE} disabled={!text} />

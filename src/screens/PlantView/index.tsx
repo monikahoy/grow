@@ -62,9 +62,11 @@ const PlantView = ({navigation, route}: any) => {
   };
 
   const onAddNoteEntry = (updateId: string) => {
+    const update = plantUpdates.find(item => item.id === updateId); // Find the update by updateId
+    const note = update?.noteEntry; // Get the specific noteEntry for the clicked updateId
     navigation.navigate('NoteEntry', {
       screen: 'NoteEntry',
-      params: {data: {plantId: plantId, updateId: updateId}},
+      params: {data: {plantId: plantId, updateId: updateId, note: note}},
     });
   };
 
