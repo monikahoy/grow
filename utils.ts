@@ -1,17 +1,9 @@
-import {
-  setDoc,
-  doc,
-  getDocs,
-  collection,
-  getDoc,
-  deleteDoc,
-} from 'firebase/firestore';
+import {setDoc, doc, getDocs, collection, deleteDoc} from 'firebase/firestore';
 import {auth, db} from './firebaseConfig';
 import plantNames from './plant-names';
 
 // This function creates a new user in the 'users' collection in Firebase
 export const createUserInFirebase = async (userId: string | null) => {
-  console.log('creating user in firebase');
   if (!userId) {
     return;
   }
@@ -22,7 +14,6 @@ export const createUserInFirebase = async (userId: string | null) => {
     await setDoc(userDocRef, {
       // Document data here.
     });
-    console.log('user created in firebase');
   } catch (error) {
     console.error('Error creating user in firebase:', error);
   }
@@ -74,7 +65,7 @@ export const deleteDocumentFromFirebase = async (
 };
 
 // Get data from the 'plants' document in Firebase
-export const getPlantDataFromFirebase = async (
+export const getPlantUpdatesCollection = async (
   userId: string | null,
   plantId: string | null,
 ) => {
@@ -85,18 +76,43 @@ export const getPlantDataFromFirebase = async (
     return null;
   }
 
+  // Create a reference to the document
+  const updatesSubcollectionRef = collection(
+    doc(db, 'users', userId, 'plants', plantId),
+    'updates',
+  );
+  // Get the documents
+  try {
+    const documentSnapshot = await getDocs(updatesSubcollectionRef);
+
+    // Map over the documents
+    const data = documentSnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return data;
+  } catch (error) {
+    console.error('Error getting plant data:', error);
+  }
+};
+
+export const saveNoteAboutPlant = async (
+  userId: string | null,
+  plantId: string | null,
+  note: string,
+) => {
+  if (!userId) {
+    return;
+  }
+  if (!plantId) {
+    return;
+  }
+
   const collectionRef = doc(db, 'users', userId, 'plants', plantId);
   try {
-    const documentSnapshot = await getDoc(collectionRef);
-
-    if (documentSnapshot.exists()) {
-      const plantData = documentSnapshot.data();
-      return plantData;
-    } else {
-      console.log('No such document!');
-    }
+    await setDoc(collectionRef, {note});
   } catch (error) {
-    console.error('Error getting document:', error);
+    console.error('Error updating document:', error);
   }
 };
 

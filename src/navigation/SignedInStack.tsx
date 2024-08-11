@@ -1,13 +1,14 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddPlant from '../screens/AddPlant';
-import AddPicture from '../screens/AddPicture';
+import AddPlantUpdate from '../screens/AddPlantUpdate';
 import PlantList from '../screens/PlantList';
 import PlantView from '../screens/PlantView';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
 import CameraCapture from '../components/Camera';
-import {Alert, Image, Text, TouchableOpacity} from 'react-native';
+import NoteEntry from '../screens/NoteEntry';
+import {Alert, Image, TouchableOpacity} from 'react-native';
 import {auth} from '../../firebaseConfig';
 import {signOut} from 'firebase/auth';
 
@@ -28,7 +29,7 @@ const onSignOut = () => {
           signOut(auth)
             .then(() => {})
             .catch(error => {
-              console.log('Error signing out:', error);
+              console.error('Error signing out:', error);
             });
         },
       },
@@ -84,10 +85,15 @@ const SignedInStack = () => {
       />
       <Stack.Screen
         name="AddPicture"
-        component={AddPicture}
+        component={AddPlantUpdate}
         options={{title: 'Update plant'}}
       />
       <Stack.Screen name="CameraCapture" component={CameraCapture} />
+      <Stack.Screen
+        name="NoteEntry"
+        component={NoteEntry}
+        options={{title: 'Add a note'}}
+      />
     </Stack.Navigator>
   );
 };

@@ -6,19 +6,30 @@ import {
   Image,
   ScrollView,
   Dimensions,
+  Pressable,
 } from 'react-native';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
 import RoundButton from '../../components/RoundButton';
 import {useFocusEffect} from '@react-navigation/native';
-import {getUserId, getPlantDataFromFirebase} from '../../../utils';
+import {getUserId, getPlantUpdatesCollection} from '../../../utils';
 
 const ctaAddPicture = 'Add';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
+interface PlantUpdate {
+  id: string;
+  picture: {
+    url: string;
+    createdAt: string;
+  };
+  noteEntry?: string;
+}
+
 const PlantView = ({navigation, route}: any) => {
-  const [data, setData] = useState(route.params.item);
+  const [data] = useState(route.params.item);
+  const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
   const plantId = data.id;
 
   const userId = getUserId();
@@ -27,26 +38,35 @@ const PlantView = ({navigation, route}: any) => {
     return;
   }
 
-  const getPlantPicturesData = useCallback(async () => {
+  const getPlantData = useCallback(async () => {
     // apply useCallback to getData and avoiding constant rerendering of the function
     try {
-      const dbData = await getPlantDataFromFirebase(userId, plantId);
-      setData(dbData);
+      const dbData: any = await getPlantUpdatesCollection(userId, plantId);
+      setPlantUpdates(dbData);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      // handle error
     }
   }, [userId]);
 
   useFocusEffect(
     useCallback(() => {
-      getPlantPicturesData();
-    }, [getPlantPicturesData]),
+      getPlantData();
+    }, [getPlantData]),
   );
 
   const onAddPicture = () => {
     navigation.navigate('AddPicture', {
       screen: 'AddPicture',
       params: {data: plantId},
+    });
+  };
+
+  const onAddNoteEntry = (updateId: string) => {
+    const update = plantUpdates.find(item => item.id === updateId); // Find the update by updateId
+    const note = update?.noteEntry; // Get the specific noteEntry for the clicked updateId
+    navigation.navigate('NoteEntry', {
+      screen: 'NoteEntry',
+      params: {data: {plantId: plantId, updateId: updateId, note: note}},
     });
   };
 
@@ -61,20 +81,29 @@ const PlantView = ({navigation, route}: any) => {
           <Text style={styles.date}>{data.createdAt}</Text>
         </View>
         <View style={styles.imageRow}>
-          {data.pictures &&
-            data.pictures.map((picture: any, index: number) => {
+          {plantUpdates &&
+            plantUpdates.map(item => {
               return (
-                <View style={styles.imageContainer} key={picture.url}>
-                  <Image source={{uri: picture.url}} style={styles.image} />
+                <View style={styles.imageContainer} key={item.id}>
+                  {item.picture && (
+                    <Image
+                      source={{uri: item.picture.url}}
+                      style={styles.image}
+                    />
+                  )}
                   <Text style={[styles.date, {fontSize: 16}]}>
-                    {picture.createdAt}
+                    {item.picture.createdAt}
                   </Text>
+                  <Pressable onPress={() => onAddNoteEntry(item.id)}>
+                    <Text style={[styles.date, {fontSize: 16}]}>
+                      {item.noteEntry ? item.noteEntry : 'Add Note'}
+                    </Text>
+                  </Pressable>
                 </View>
               );
             })}
         </View>
       </ScrollView>
-
       <RoundButton onPress={onAddPicture} label={ctaAddPicture} />
     </View>
   );
