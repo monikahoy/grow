@@ -50,7 +50,6 @@ const AddPlant = ({navigation}: AddPlantProps) => {
     });
 
     navigation.navigate('Home');
-    console.log('Photo saved successfully.');
   };
 
   return (
