@@ -3,13 +3,19 @@ import {SafeAreaView, StyleSheet} from 'react-native';
 import CameraCapture from '../../components/Camera';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import {v4 as uuidv4} from 'uuid';
-import {updateDoc, doc, arrayUnion} from 'firebase/firestore';
+import {doc, collection, setDoc} from 'firebase/firestore';
 import {db, storage} from '../../../firebaseConfig';
 import {formatDate, getUserId} from '../../../utils';
 import Colors from '../../theme/Colors';
 
-const AddPicture = ({navigation, route}: any) => {
+const AddPlantUpdate = ({navigation, route}: any) => {
   const {data: plantId} = route.params.params; // had to handle nested navigator, why there is params 2 times
+
+  const userId = getUserId();
+  if (!userId) {
+    // handle error
+    return;
+  }
 
   const handleOnAddPicture = async (imageBlob: Blob) => {
     if (!plantId) {
@@ -22,24 +28,24 @@ const AddPicture = ({navigation, route}: any) => {
     // Get download URL
     const downloadURL = await getDownloadURL(storageRef);
 
-    const userId = getUserId();
-    if (!userId) {
-      // handle error
-      return;
-    }
-
     const pictureData = {
       url: downloadURL,
       createdAt: formatDate(new Date()),
     };
 
-    // Save picture in Firestore
-    const plantDocumentRef = doc(db, 'users', userId, 'plants', plantId);
-    await updateDoc(plantDocumentRef, {
-      pictures: arrayUnion(pictureData),
+    const newUpdateId = uuidv4();
+    const newUpdateDocRef = doc(updatesSubcollectionRef, newUpdateId);
+    await setDoc(newUpdateDocRef, {
+      picture: pictureData,
     });
+
     navigation.goBack();
   };
+
+  const updatesSubcollectionRef = collection(
+    doc(db, 'users', userId, 'plants', plantId),
+    'updates',
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -58,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AddPicture;
+export default AddPlantUpdate;
