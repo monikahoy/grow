@@ -45,6 +45,7 @@ const SignedInStack = () => {
         headerStyle: {backgroundColor: Colors.background},
         headerShadowVisible: false,
         headerBackTitleVisible: false,
+        headerTitleAlign: 'center',
         headerTitleStyle: {
           fontSize: 26,
           fontFamily: BasicFonts.PACIFICO_REGULAR,

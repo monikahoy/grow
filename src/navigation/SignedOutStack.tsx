@@ -15,6 +15,7 @@ const SignedOutStack = () => {
         headerTintColor: Colors.headerText,
         headerStyle: {backgroundColor: Colors.background},
         headerShadowVisible: false,
+        headerTitleAlign: 'center',
         headerTitleStyle: {
           fontSize: 24,
           fontFamily: BasicFonts.PACIFICO_REGULAR,
