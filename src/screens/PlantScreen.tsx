@@ -8,12 +8,19 @@ import {
   Dimensions,
   Pressable,
   ActivityIndicator,
+  TouchableHighlight,
+  Alert,
 } from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
 import RoundButton from '../components/RoundButton';
 import {useFocusEffect} from '@react-navigation/native';
-import {getUserId, getPlantUpdatesCollection, formatDate} from '../../utils';
+import {
+  getUserId,
+  getPlantUpdatesCollection,
+  formatDate,
+  deleteDocumentFromFirebase,
+} from '../../utils';
 import {useTranslation} from 'react-i18next';
 import {Timestamp} from 'firebase/firestore';
 
@@ -92,9 +99,39 @@ const PlantView = ({navigation, route}: any) => {
     return <LoadingView text={t('plantView.loading')} />;
   }
 
+  const deletePlant = async () => {
+    // Delete plant from Firebase
+    await deleteDocumentFromFirebase(userId, plantId);
+    navigation.navigate('Home');
+  };
+
+  const onPressDelete = async () => {
+    Alert.alert(t('deletePlant.title'), t('deletePlant.text'), [
+      {
+        text: t('deletePlant.no'),
+        style: 'cancel',
+      },
+      {
+        text: t('deletePlant.ok'),
+        onPress: () => deletePlant(),
+      },
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
+        <TouchableHighlight onPress={onPressDelete} underlayColor="transparent">
+          <Image
+            source={require('../../assets/icons/icon_delete.png')}
+            style={{
+              width: 20,
+              height: 20,
+              alignSelf: 'flex-end',
+              marginRight: 10,
+            }}
+          />
+        </TouchableHighlight>
         <View style={styles.topContainer}>
           <Image source={{uri: data.photoURL}} style={styles.topImage} />
         </View>

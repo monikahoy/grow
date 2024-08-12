@@ -35,10 +35,6 @@ const PlantsList = ({navigation}: any) => {
     navigation.navigate(AddPlant);
   };
 
-  const onDeleteItem = useCallback(() => {
-    getData();
-  }, [getData]);
-
   const handlePressItem = useCallback(
     (item: Plant) => () => {
       navigation.navigate('PlantView', {item});
@@ -61,11 +57,10 @@ const PlantsList = ({navigation}: any) => {
           timestamp={item.createdAt}
           image={item.photoURL}
           onPress={handlePressItem(item)}
-          onDelete={onDeleteItem}
         />
       </View>
     ),
-    [handlePressItem, onDeleteItem],
+    [handlePressItem],
   );
 
   return (
