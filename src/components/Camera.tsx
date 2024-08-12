@@ -16,7 +16,6 @@ type CameraCaptureProps = {
 };
 
 const CameraCapture = ({onCapture}: CameraCaptureProps) => {
-  const [isCapturing, setIsCapturing] = useState(false);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
   const [cameraMode, setCameraMode] = useState<'capture' | 'show'>('capture');
@@ -29,7 +28,7 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
     (async () => {
       setIsLoading(true);
       const status = await Camera.requestCameraPermission();
-      setHasPermission(status === 'authorized');
+      setHasPermission(status === 'authorized'); // evaluates to true or false, then sets the state
       setIsLoading(false);
     })();
   }, []);
@@ -40,7 +39,6 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
         throw new Error("Can't connect to camera");
       }
       setIsLoading(true);
-      setIsCapturing(true);
       const photo: PhotoFile = await camera.current.takePhoto({
         qualityPrioritization: 'speed',
       });
@@ -50,7 +48,6 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
       console.error(error);
     } finally {
       // Reset capturing state regardless of whether an errror occurred
-      setIsCapturing(false);
       setIsLoading(false);
     }
   };
@@ -87,7 +84,7 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
     return (
       <View style={styles.flexContainer}>
         <Camera
-          style={styles.preview}
+          style={styles.flexContainer}
           device={device}
           isActive={true}
           photo={true}
@@ -105,7 +102,7 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
         <Button title={t('camera.save')} onPress={onSave} />
       </View>
       <View style={styles.flexContainer}>
-        <Image source={{uri: photoUri}} style={styles.preview} />
+        <Image source={{uri: photoUri}} style={styles.flexContainer} />
       </View>
       <RoundButton isCameraButton disabled />
     </>
@@ -129,10 +126,6 @@ const styles = StyleSheet.create({
   },
   flexContainer: {
     flex: 1,
-  },
-  preview: {
-    flex: 1,
-    borderRadius: 5,
   },
   buttonsContainer: {
     flexDirection: 'row',
