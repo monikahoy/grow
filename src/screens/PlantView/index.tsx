@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
@@ -14,7 +15,8 @@ import RoundButton from '../../components/RoundButton';
 import {useFocusEffect} from '@react-navigation/native';
 import {getUserId, getPlantUpdatesCollection} from '../../../utils';
 
-const ctaAddPicture = 'Add';
+const CTA_ADD = 'Add';
+const LOADING_TEXT = 'Loading your plant';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -27,9 +29,17 @@ interface PlantUpdate {
   noteEntry?: string;
 }
 
+const LoadingView = () => (
+  <View style={styles.activityIndicator}>
+    <Text>{LOADING_TEXT}</Text>
+    <ActivityIndicator />
+  </View>
+);
+
 const PlantView = ({navigation, route}: any) => {
   const [data] = useState(route.params.item);
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const plantId = data.id;
 
   const userId = getUserId();
@@ -41,10 +51,13 @@ const PlantView = ({navigation, route}: any) => {
   const getPlantData = useCallback(async () => {
     // apply useCallback to getData and avoiding constant rerendering of the function
     try {
+      setIsLoading(true);
       const dbData: any = await getPlantUpdatesCollection(userId, plantId);
       setPlantUpdates(dbData);
     } catch (error) {
       // handle error
+    } finally {
+      setIsLoading(false);
     }
   }, [userId]);
 
@@ -69,6 +82,10 @@ const PlantView = ({navigation, route}: any) => {
       params: {data: {plantId: plantId, updateId: updateId, note: note}},
     });
   };
+
+  if (isLoading) {
+    return <LoadingView />;
+  }
 
   return (
     <View style={styles.container}>
@@ -104,12 +121,18 @@ const PlantView = ({navigation, route}: any) => {
             })}
         </View>
       </ScrollView>
-      <RoundButton onPress={onAddPicture} label={ctaAddPicture} />
+      <RoundButton onPress={onAddPicture} label={CTA_ADD} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  activityIndicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+  },
   container: {
     flex: 1,
     paddingTop: 20,
