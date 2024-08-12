@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   SafeAreaView,
   StyleSheet,
@@ -7,16 +8,14 @@ import {
 import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
-
-const emailInputPlaceholder = 'Email';
-const passwordPlaceholder = 'Password';
-const confirmPasswordPlaceholder = 'Confirm password';
-const ctaRegister = 'Register';
 import {auth} from '../../../firebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
 import {createUserInFirebase, getUserId} from '../../../utils';
+import {useTranslation} from 'react-i18next';
+import Colors from '../../theme/Colors';
 
 const Register = () => {
+  const {t} = useTranslation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [confirmPassword, setConfirmPassword] = useState<string>('');
@@ -27,7 +26,7 @@ const Register = () => {
     if (password !== '' && confirmPassword !== '') {
       if (password !== confirmPassword) {
         isValid = false;
-        setError('Passwords does not match');
+        Alert.alert(t('signup.error.title'), t('signup.error.confirmPassword'));
       }
     }
     return isValid;
@@ -54,25 +53,29 @@ const Register = () => {
       <KeyboardAvoidingView style={styles.keyboard}>
         <View style={styles.topContainer}>
           <TextInput
-            placeholder={emailInputPlaceholder}
+            placeholder={t('signup.email')}
             secureTextEntry={false}
             value={email}
             onChangeText={setEmail}
           />
           <TextInput
-            placeholder={passwordPlaceholder}
+            placeholder={t('signup.password')}
             secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
           />
           <TextInput
-            placeholder={confirmPasswordPlaceholder}
+            placeholder={t('signup.confirmPassword')}
             secureTextEntry={true}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
           />
+          <Button
+            disabled={false}
+            onPress={onRegister}
+            title={t('signup.ctaSignUp')}
+          />
         </View>
-        <Button disabled={false} onPress={onRegister} title={ctaRegister} />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -83,6 +86,7 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.background,
   },
   keyboard: {
     flex: 1,

@@ -9,6 +9,7 @@ import React, {useState} from 'react';
 import Button from '../../components/Button';
 import TextInput from '../../components/TextInput';
 import Register from '../Register';
+import {useTranslation} from 'react-i18next';
 
 import Colors from '../../theme/Colors';
 
@@ -19,6 +20,7 @@ import {auth} from '../../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const Login = ({navigation}: any) => {
+  const {t} = useTranslation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [error, setError] = useState<string>();
@@ -47,30 +49,30 @@ const Login = ({navigation}: any) => {
       <KeyboardAvoidingView style={styles.keyboard}>
         <View style={styles.topContainer}>
           <TextInput
-            placeholder={emailInputPlaceholder}
+            placeholder={t('login.email')}
             secureTextEntry={false}
             value={email}
             onChangeText={setEmail}
           />
           <TextInput
-            placeholder={passwordPlaceholder}
+            placeholder={t('login.password')}
             secureTextEntry={true}
             value={password}
             onChangeText={setPassword}
           />
         </View>
         <View style={styles.bottomContainer}>
-          <Button onPress={onLogin} title={ctaSignIn} />
+          <Button onPress={onLogin} title={t('login.ctaSignIn')} />
           <View
             style={{
               marginVertical: 40,
               justifyContent: 'center',
               alignItems: 'center',
             }}>
-            <Text>Or register </Text>
+            <Text>{t('login.register')}</Text>
             <Button
               onPress={onNavigateToRegister}
-              title={'here'}
+              title={t('login.registerHere')}
               style={{padding: 0}}
             />
           </View>

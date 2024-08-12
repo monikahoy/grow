@@ -14,19 +14,12 @@ import {getUserId} from '../../../utils';
 import Colors from '../../theme/Colors';
 import Button from '../../components/Button';
 import Fonts from '../../theme/Fonts';
+import {useTranslation} from 'react-i18next';
 
-const placeholder =
-  'Add your notes here... (e.g., Noticed new leaves, is thriving in the sun, etc.)';
-const SAVE = 'Save';
-const CANCEL = 'X';
-const DELETE = 'Delete';
-const CONFIRM = 'Are you sure you want to cancel?';
-const CONFIRM_SUBTEXT = 'All your edits will be lost';
-const CONFIRM_OK = 'Yes, I am sure';
-const CONFIRM_CANCEL = 'No, I want to stay';
 const screenHeight = Dimensions.get('window').height;
 
 const NoteEntry = ({navigation, route}: any) => {
+  const {t} = useTranslation();
   const {plantId, updateId, note} = route.params.params.data; // had to handle nested navigator, why there is params 2 times
   const [text, setText] = useState(note);
 
@@ -80,32 +73,48 @@ const NoteEntry = ({navigation, route}: any) => {
   };
 
   const handleOnCancel = () => {
-    Alert.alert(CONFIRM, CONFIRM_SUBTEXT, [
-      {
-        text: CONFIRM_CANCEL,
-      },
-      {
-        text: CONFIRM_OK,
-        onPress: handleGoBack, // Reference to the function
-      },
-    ]);
+    Alert.alert(
+      t('noteEntry.cancelConfirmTitle'),
+      t('noteEntry.cancelConfirmText'),
+      [
+        {
+          text: t('noteEntry.cancelConfirmNo'),
+        },
+        {
+          text: t('noteEntry.cancelConfirmOk'),
+          onPress: handleGoBack, // Reference to the function
+        },
+      ],
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView>
-        <Button onPress={handleOnCancel} title={CANCEL} style={styles.button} />
+        <Button
+          onPress={handleOnCancel}
+          title={t('noteEntry.ctaCancel')}
+          style={styles.button}
+        />
         <View style={styles.contentContainer}>
           <TextInput
             onChangeText={onChangeText}
-            placeholder={placeholder}
+            placeholder={t('noteEntry.placeholder')}
             multiline={true}
             style={styles.textInput}
             value={text}
           />
           <View style={styles.buttonContainer}>
-            <Button onPress={handleOnNoteEntry} title={SAVE} disabled={!text} />
-            <Button onPress={handleOnDelete} title={DELETE} disabled={!text} />
+            <Button
+              onPress={handleOnNoteEntry}
+              title={t('noteEntry.ctaSave')}
+              disabled={!text}
+            />
+            <Button
+              onPress={handleOnDelete}
+              title={t('noteEntry.ctaDelete')}
+              disabled={!text}
+            />
           </View>
         </View>
       </KeyboardAvoidingView>

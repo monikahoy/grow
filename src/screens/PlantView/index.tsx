@@ -18,9 +18,8 @@ import {
   getPlantUpdatesCollection,
   parseFormattedDate,
 } from '../../../utils';
+import {useTranslation} from 'react-i18next';
 
-const CTA_ADD = 'Add';
-const LOADING_TEXT = 'Loading your plant';
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
@@ -33,14 +32,19 @@ interface PlantUpdate {
   noteEntry?: string;
 }
 
-const LoadingView = () => (
+interface LoadingViewProps {
+  text: string;
+}
+
+const LoadingView = ({text}: LoadingViewProps) => (
   <View style={styles.activityIndicator}>
-    <Text>{LOADING_TEXT}</Text>
+    <Text>{text}</Text>
     <ActivityIndicator />
   </View>
 );
 
 const PlantView = ({navigation, route}: any) => {
+  const {t} = useTranslation();
   const [data] = useState(route.params.item);
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -95,7 +99,7 @@ const PlantView = ({navigation, route}: any) => {
   });
 
   if (isLoading) {
-    return <LoadingView />;
+    return <LoadingView text={t('plantView.loading')} />;
   }
 
   return (
@@ -126,7 +130,7 @@ const PlantView = ({navigation, route}: any) => {
           ))}
         </View>
       </ScrollView>
-      <RoundButton onPress={onAddPicture} label={CTA_ADD} />
+      <RoundButton onPress={onAddPicture} label={t('plantView.ctaAdd')} />
     </View>
   );
 };
