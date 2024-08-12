@@ -2,10 +2,13 @@ import React, {useState} from 'react';
 import {
   Alert,
   Dimensions,
+  Keyboard,
   KeyboardAvoidingView,
+  Platform,
   SafeAreaView,
   StyleSheet,
   TextInput,
+  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import {updateDoc, doc} from 'firebase/firestore';
@@ -90,33 +93,38 @@ const NoteEntry = ({navigation, route}: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Button
           onPress={handleOnCancel}
           title={t('noteEntry.ctaCancel')}
           style={styles.button}
         />
-        <View style={styles.contentContainer}>
-          <TextInput
-            onChangeText={onChangeText}
-            placeholder={t('noteEntry.placeholder')}
-            multiline={true}
-            style={styles.textInput}
-            value={text}
-          />
-          <View style={styles.buttonContainer}>
-            <Button
-              onPress={handleOnNoteEntry}
-              title={t('noteEntry.ctaSave')}
-              disabled={!text}
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={styles.contentContainer}>
+            <TextInput
+              onChangeText={onChangeText}
+              placeholder={t('noteEntry.placeholder')}
+              multiline={true}
+              style={styles.textInput}
+              value={text}
+              placeholderTextColor={Colors.placeholderText}
             />
-            <Button
-              onPress={handleOnDelete}
-              title={t('noteEntry.ctaDelete')}
-              disabled={!text}
-            />
+
+            <View style={styles.buttonContainer}>
+              <Button
+                onPress={handleOnNoteEntry}
+                title={t('noteEntry.ctaSave')}
+                disabled={!text}
+              />
+              <Button
+                onPress={handleOnDelete}
+                title={t('noteEntry.ctaDelete')}
+                disabled={!text}
+              />
+            </View>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -131,7 +139,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     backgroundColor: Colors.lightBlueGreen,
-    height: screenHeight / 2,
+    height: screenHeight / 3,
     marginHorizontal: 20,
     justifyContent: 'space-between',
   },
