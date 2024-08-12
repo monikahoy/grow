@@ -13,7 +13,11 @@ import Colors from '../../theme/Colors';
 import Fonts from '../../theme/Fonts';
 import RoundButton from '../../components/RoundButton';
 import {useFocusEffect} from '@react-navigation/native';
-import {getUserId, getPlantUpdatesCollection} from '../../../utils';
+import {
+  getUserId,
+  getPlantUpdatesCollection,
+  parseFormattedDate,
+} from '../../../utils';
 
 const CTA_ADD = 'Add';
 const LOADING_TEXT = 'Loading your plant';
@@ -24,7 +28,7 @@ interface PlantUpdate {
   id: string;
   picture: {
     url: string;
-    createdAt: string;
+    createdAt: string; // SHOULD INCLUDE TIME IN THE FUTURE
   };
   noteEntry?: string;
 }
@@ -44,22 +48,22 @@ const PlantView = ({navigation, route}: any) => {
 
   const userId = getUserId();
   if (!userId) {
-    // handle error
-    return;
+    // handle error (e.g., redirect or show an error message)
+    return null; // or a fallback UI
   }
 
   const getPlantData = useCallback(async () => {
-    // apply useCallback to getData and avoiding constant rerendering of the function
     try {
       setIsLoading(true);
       const dbData: any = await getPlantUpdatesCollection(userId, plantId);
       setPlantUpdates(dbData);
     } catch (error) {
-      // handle error
+      // handle error (e.g., show an alert or a notification)
+      console.error('Error fetching plant updates:', error);
     } finally {
       setIsLoading(false);
     }
-  }, [userId]);
+  }, [userId, plantId]);
 
   useFocusEffect(
     useCallback(() => {
@@ -75,13 +79,20 @@ const PlantView = ({navigation, route}: any) => {
   };
 
   const onAddNoteEntry = (updateId: string) => {
-    const update = plantUpdates.find(item => item.id === updateId); // Find the update by updateId
-    const note = update?.noteEntry; // Get the specific noteEntry for the clicked updateId
+    const update = plantUpdates.find(item => item.id === updateId);
+    const note = update?.noteEntry;
     navigation.navigate('NoteEntry', {
       screen: 'NoteEntry',
       params: {data: {plantId: plantId, updateId: updateId, note: note}},
     });
   };
+
+  // Sort plantUpdates by date, newest first
+  const sortedPlantUpdates = plantUpdates.slice().sort((a, b) => {
+    const dateA = parseFormattedDate(a.picture.createdAt);
+    const dateB = parseFormattedDate(b.picture.createdAt);
+    return dateB.getTime() - dateA.getTime();
+  });
 
   if (isLoading) {
     return <LoadingView />;
@@ -98,27 +109,21 @@ const PlantView = ({navigation, route}: any) => {
           <Text style={styles.date}>{data.createdAt}</Text>
         </View>
         <View style={styles.imageRow}>
-          {plantUpdates &&
-            plantUpdates.map(item => {
-              return (
-                <View style={styles.imageContainer} key={item.id}>
-                  {item.picture && (
-                    <Image
-                      source={{uri: item.picture.url}}
-                      style={styles.image}
-                    />
-                  )}
-                  <Text style={[styles.date, {fontSize: 16}]}>
-                    {item.picture.createdAt}
-                  </Text>
-                  <Pressable onPress={() => onAddNoteEntry(item.id)}>
-                    <Text style={[styles.date, {fontSize: 16}]}>
-                      {item.noteEntry ? item.noteEntry : 'Add Note'}
-                    </Text>
-                  </Pressable>
-                </View>
-              );
-            })}
+          {sortedPlantUpdates.map(item => (
+            <View style={styles.imageContainer} key={item.id}>
+              {item.picture && (
+                <Image source={{uri: item.picture.url}} style={styles.image} />
+              )}
+              <Text style={[styles.date, {fontSize: 16}]}>
+                {item.picture.createdAt}
+              </Text>
+              <Pressable onPress={() => onAddNoteEntry(item.id)}>
+                <Text style={[styles.date, {fontSize: 16}]}>
+                  {item.noteEntry ? item.noteEntry : 'Add Note'}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
         </View>
       </ScrollView>
       <RoundButton onPress={onAddPicture} label={CTA_ADD} />
@@ -175,7 +180,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     paddingBottom: 10,
-    width: screenWidth / 2 - 20, // Two pictures in a row with padding
+    width: screenWidth / 2 - 20,
   },
   image: {
     width: '100%',

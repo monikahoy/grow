@@ -42,7 +42,6 @@ const AddPlant = ({navigation}: AddPlantProps) => {
       console.error('Error handling image blob in parent:', error);
     }
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>

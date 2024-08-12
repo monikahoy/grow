@@ -1,6 +1,7 @@
 import {setDoc, doc, getDocs, collection, deleteDoc} from 'firebase/firestore';
 import {auth, db} from './firebaseConfig';
 import plantNames from './plant-names';
+import {parse} from 'date-fns';
 
 // This function creates a new user in the 'users' collection in Firebase
 export const createUserInFirebase = async (userId: string | null) => {
@@ -125,6 +126,11 @@ export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
+// had to add parsing function since images are saved in string format and not ISO - update for future
+export const parseFormattedDate = (dateStr: string): Date => {
+  return parse(dateStr, 'MMMM d, yyyy', new Date());
+};
+
 const usedNames = new Set();
 
 export const getRandomPlantName = () => {
@@ -135,11 +141,9 @@ export const getRandomPlantName = () => {
     usedNames.clear();
   }
 
+  // Select a random unused name
   const randomIndex = Math.floor(Math.random() * unusedNames.length);
   const selectedName = unusedNames[randomIndex];
-
-  // Mark the selected name as used
-  usedNames.add(selectedName);
 
   return selectedName;
 };
