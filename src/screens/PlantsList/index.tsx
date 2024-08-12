@@ -14,11 +14,11 @@ const ctaAddPlant = 'New';
 type Plant = {
   id: string;
   name: string;
-  createdAt: string; // Date in string format
+  createdAt: string;
   photoURL: string;
 };
 
-const PlantList = ({navigation}: any) => {
+const PlantsList = ({navigation}: any) => {
   const [plantData, setPlantData] = useState<Plant[]>([]);
 
   const onAddPlant = () => {
@@ -90,7 +90,7 @@ const PlantList = ({navigation}: any) => {
   );
 };
 
-export default PlantList;
+export default PlantsList;
 
 const styles = StyleSheet.create({
   container: {

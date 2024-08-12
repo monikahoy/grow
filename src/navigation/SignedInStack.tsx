@@ -2,11 +2,10 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddPlant from '../screens/AddPlant';
 import AddPlantUpdate from '../screens/AddPlantUpdate';
-import PlantList from '../screens/PlantList';
+import PlantsList from '../screens/PlantsList';
 import PlantView from '../screens/PlantView';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
-import CameraCapture from '../components/Camera';
 import NoteEntry from '../screens/NoteEntry';
 import {Alert, Image, TouchableOpacity} from 'react-native';
 import {auth} from '../../firebaseConfig';
@@ -53,7 +52,7 @@ const SignedInStack = () => {
       }}>
       <Stack.Screen
         name="Home"
-        component={PlantList}
+        component={PlantsList}
         options={{
           title: 'Home',
           headerShown: true,
@@ -89,7 +88,6 @@ const SignedInStack = () => {
         component={AddPlantUpdate}
         options={{title: 'Update plant'}}
       />
-      <Stack.Screen name="CameraCapture" component={CameraCapture} />
       <Stack.Screen
         name="NoteEntry"
         component={NoteEntry}
