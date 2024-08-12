@@ -1,5 +1,5 @@
 import React, {useCallback, useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import {View, FlatList, StyleSheet, Text} from 'react-native';
 import PlantItem from '../../components/PlantItem';
 import RoundButton from '../../components/RoundButton';
 import AddPlant from '../AddPlant';
@@ -7,8 +7,7 @@ import Colors from '../../theme/Colors';
 import {getUserId, getUserPlantDataFromFirebase} from '../../../utils';
 import {useFocusEffect} from '@react-navigation/native';
 import EmptyList from '../../components/EmptyList';
-
-const ctaAddPlant = 'New';
+import {useTranslation} from 'react-i18next';
 
 type Plant = {
   id: string;
@@ -19,6 +18,7 @@ type Plant = {
 
 const PlantsList = ({navigation}: any) => {
   const [plantData, setPlantData] = useState<Plant[]>([]);
+  const {t} = useTranslation();
 
   const userId = getUserId();
 
@@ -81,7 +81,7 @@ const PlantsList = ({navigation}: any) => {
       ) : (
         <EmptyList />
       )}
-      <RoundButton onPress={onAddPlant} label={ctaAddPlant} />
+      <RoundButton onPress={onAddPlant} label={t('plantsList.ctaAddPlant')} />
     </View>
   );
 };

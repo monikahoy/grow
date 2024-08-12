@@ -1,0 +1,50 @@
+{
+    "translation": {
+      "common": {
+      },
+      "login": {
+        "email": "Email",
+        "password": "Password",
+        "ctaSignIn": "Sign in",
+        "register": "Or register",
+        "registerHere": "here",
+        "error": {
+          "email": "Please enter a valid email",
+          "password": "Please enter a valid password"
+        }
+      },
+      "signup": {
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm password",
+        "ctaSignUp": "Register",
+        "error": {
+          "title": "Error", 
+          "confirmPassword": "Passwords do not match"
+        }
+      },
+      "plantsList": {
+        "ctaAddPlant": "New"
+      },
+      "plantView": {
+        "ctaAdd": "Add",
+        "loading": "Loading your plant"
+      },
+      "camera": {
+        "retake": "Retake",
+        "save": "Save"
+      },
+      "noteEntry": {
+        "placeholder": "Add your notes here... (e.g., Noticed new leaves, is thriving in the sun, etc.)",
+        "ctaSave": "Save",
+        "ctaCancel": "X",
+        "ctaDelete": "Delete",
+        "cancelConfirmTitle": "Are you sure you want to cancel?",
+        "cancelConfirmText": "You will lose any unsaved changes.",
+        "cancelConfirmOk": "Yes, I am sure",
+        "cancelConfirmNo": "No, I want to stay"
+
+      }
+      
+   }
+  }

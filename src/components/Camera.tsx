@@ -3,6 +3,7 @@ import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 import RoundButton from './RoundButton';
+import {useTranslation} from 'react-i18next';
 
 const LoadingView = () => (
   <View style={styles.activityIndicator}>
@@ -20,6 +21,7 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
   const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
   const [cameraMode, setCameraMode] = useState<'capture' | 'show'>('capture');
   const [isLoading, setIsLoading] = useState(true);
+  const {t} = useTranslation();
 
   const camera = useRef<Camera | null>(null);
   const devices = useCameraDevices();
@@ -99,8 +101,8 @@ const CameraCapture = ({onCapture}: CameraCaptureProps) => {
   const renderShowMode = () => (
     <>
       <View style={styles.buttonsContainer}>
-        <Button onPress={onRetake} title="Retake" />
-        <Button title="Save" onPress={onSave} />
+        <Button onPress={onRetake} title={t('camera.retake')} />
+        <Button title={t('camera.save')} onPress={onSave} />
       </View>
       <View style={styles.flexContainer}>
         <Image source={{uri: photoUri}} style={styles.preview} />
