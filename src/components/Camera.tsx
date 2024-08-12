@@ -1,36 +1,28 @@
-import React, {useState, useEffect, useRef, RefObject} from 'react';
-import 'react-native-get-random-values';
+import React, {useState, useEffect, useRef} from 'react';
 import {StyleSheet, View, Image, ActivityIndicator} from 'react-native';
 import {Camera, useCameraDevices, PhotoFile} from 'react-native-vision-camera';
 import Button from './Button';
 import RoundButton from './RoundButton';
-import {NavigationProp} from '@react-navigation/core';
 
-const LoadingView = () => {
-  return (
-    <View style={styles.activityIndicator}>
-      <ActivityIndicator />
-    </View>
-  );
-};
+const LoadingView = () => (
+  <View style={styles.activityIndicator}>
+    <ActivityIndicator />
+  </View>
+);
 
 type CameraCaptureProps = {
-  uri?: string;
-  navigation: NavigationProp<any>;
   onCapture: (imageBlob: Blob) => void;
 };
 
-const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
+const CameraCapture = ({onCapture}: CameraCaptureProps) => {
   const [isCapturing, setIsCapturing] = useState(false);
-  const [hasPermission, setHasPermission] = useState<boolean>();
-  const [photoUri, setPhotoUri] = useState(uri);
-  const [cameraMode, setCameraMode] = useState(uri ? 'show' : 'capture');
+  const [hasPermission, setHasPermission] = useState<boolean>(false);
+  const [photoUri, setPhotoUri] = useState<string | undefined>(undefined);
+  const [cameraMode, setCameraMode] = useState<'capture' | 'show'>('capture');
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true); // New loading state
-  const camera: RefObject<any> = useRef(null);
+  const camera = useRef<Camera | null>(null);
   const devices = useCameraDevices();
-  const image: RefObject<Image> = useRef(null);
-
   useEffect(() => {
     (async () => {
       setIsLoading(true);
@@ -50,85 +42,78 @@ const CameraCapture = ({uri, navigation, onCapture}: CameraCaptureProps) => {
       const photo: PhotoFile = await camera.current.takePhoto({
         qualityPrioritization: 'speed',
       });
-      const photoPath = photo.path;
-      const photoPathUri = photoPath;
-      setPhotoUri(photoPathUri);
+      setPhotoUri(photo.path);
       setCameraMode('show');
-      setIsCapturing(false);
-      setIsLoading(false);
     } catch (error) {
       console.error(error);
+    } finally {
+      // Reset capturing state regardless of whether an errror occurred
+      setIsCapturing(false);
+      setIsLoading(false);
     }
   };
 
   const onRetake = () => {
     setIsLoading(true);
-
-    setTimeout(() => {
-      setCameraMode('capture');
-      setIsLoading(false);
-    }, 300);
+    setCameraMode('capture');
+    setIsLoading(false);
   };
 
   const onSave = async () => {
-    setIsLoading(true);
-    try {
-      if (!photoUri) {
-        return;
-      }
+    if (!photoUri) return;
 
+    try {
+      setIsLoading(true);
       // Read the contents of the image file
       const imageFile = await fetch(photoUri);
-      // Make it into an image blob for the sake of firebase
+      // Convert the image to a blob for firebase storage
       const imageBlob = await imageFile.blob();
-      onCapture(imageBlob); // send the imageblob to be handled by the function provided by the parent component
+      // Pass the blob to the parent component
+      onCapture(imageBlob);
+    } catch (error) {
+      console.error('Error saving the photo:', error);
+    } finally {
       setIsLoading(false);
-    } catch (error) {}
+    }
   };
+
+  const renderCaptureMode = () => {
+    const device = devices.back;
+    if (device == null || !hasPermission) {
+      return <LoadingView />;
+    }
+    return (
+      <View style={styles.flexContainer}>
+        <Camera
+          style={styles.preview}
+          device={device}
+          isActive={true}
+          photo={true}
+          ref={camera}
+        />
+        <RoundButton onPress={onTakePicture} isCameraButton />
+      </View>
+    );
+  };
+
+  const renderShowMode = () => (
+    <>
+      <View style={styles.buttonsContainer}>
+        <Button onPress={onRetake} title="Retake" />
+        <Button title="Save" onPress={onSave} />
+      </View>
+      <View style={styles.flexContainer}>
+        <Image source={{uri: photoUri}} style={styles.preview} />
+      </View>
+      <RoundButton isCameraButton disabled />
+    </>
+  );
 
   if (isLoading) {
     return <LoadingView />;
   }
 
-  if (cameraMode === 'show') {
-    return (
-      <>
-        <View style={styles.buttonsContainer}>
-          <Button onPress={onRetake} title="Retake" />
-          <Button title="Save" onPress={onSave} />
-        </View>
-        <View style={styles.topContainer}>
-          <Image ref={image} source={{uri: photoUri}} style={styles.image} />
-        </View>
-        <RoundButton isCameraButton disabled />
-      </>
-    );
-  }
-
-  const device = devices.back;
-
-  if (device == null) {
-    return <LoadingView />;
-  }
-
-  if (cameraMode === 'capture') {
-    return (
-      <>
-        <View style={styles.topContainer}>
-          {hasPermission && (
-            <Camera
-              style={[StyleSheet.absoluteFill, styles.image]}
-              device={device}
-              isActive={true}
-              photo={true}
-              ref={camera}
-            />
-          )}
-        </View>
-        <RoundButton onPress={onTakePicture} isCameraButton />
-      </>
-    );
-  }
+  return cameraMode === 'capture' ? renderCaptureMode() : renderShowMode();
 };
 
 export default CameraCapture;
@@ -140,14 +125,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent',
   },
-  topContainer: {
+  flexContainer: {
     flex: 1,
   },
-  image: {
+  preview: {
     flex: 1,
     borderRadius: 5,
   },
-  button: {},
   buttonsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',

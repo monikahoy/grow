@@ -2,6 +2,7 @@ import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
 import CameraCapture from '../../components/Camera';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
+import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import {doc, collection, setDoc} from 'firebase/firestore';
 import {db, storage} from '../../../firebaseConfig';
@@ -34,9 +35,9 @@ const AddPlantUpdate = ({navigation, route}: any) => {
     };
 
     const newUpdateId = uuidv4();
-    const newUpdateDocRef = doc(updatesSubcollectionRef, newUpdateId);
+    const newUpdateDocRef = doc(updatesSubcollectionRef, newUpdateId); // Create a DocumentReference with a new ID
     await setDoc(newUpdateDocRef, {
-      picture: pictureData,
+      picture: pictureData, // Set the document data
     });
 
     navigation.goBack();
@@ -49,7 +50,7 @@ const AddPlantUpdate = ({navigation, route}: any) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <CameraCapture navigation={navigation} onCapture={handleOnAddPicture} />
+      <CameraCapture onCapture={handleOnAddPicture} />
     </SafeAreaView>
   );
 };
