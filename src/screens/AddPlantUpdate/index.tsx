@@ -4,7 +4,7 @@ import CameraCapture from '../../components/Camera';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
-import {doc, collection, setDoc} from 'firebase/firestore';
+import {doc, collection, setDoc, addDoc} from 'firebase/firestore';
 import {db, storage} from '../../../firebaseConfig';
 import {formatDate, getUserId} from '../../../utils';
 import Colors from '../../theme/Colors';
@@ -34,19 +34,17 @@ const AddPlantUpdate = ({navigation, route}: any) => {
       createdAt: formatDate(new Date()),
     };
 
-    const newUpdateId = uuidv4();
-    const newUpdateDocRef = doc(updatesSubcollectionRef, newUpdateId); // Create a DocumentReference with a new ID
-    await setDoc(newUpdateDocRef, {
-      picture: pictureData, // Set the document data
+    const updatesSubcollectionRef = collection(
+      doc(db, 'users', userId, 'plants', plantId),
+      'updates',
+    );
+    // Create a new document with a unique ID in the updates subcollection
+    await addDoc(updatesSubcollectionRef, {
+      picture: pictureData,
     });
 
     navigation.goBack();
   };
-
-  const updatesSubcollectionRef = collection(
-    doc(db, 'users', userId, 'plants', plantId),
-    'updates',
-  );
 
   return (
     <SafeAreaView style={styles.container}>
