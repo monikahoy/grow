@@ -42,7 +42,9 @@
         "cancelConfirmTitle": "Are you sure you want to cancel?",
         "cancelConfirmText": "You will lose any unsaved changes.",
         "cancelConfirmOk": "Yes, I am sure",
-        "cancelConfirmNo": "No, I want to stay"
+        "cancelConfirmNo": "No, I want to stay",
+        "add": "Add Note",
+        "show": "See Notes"
       },
       "emptyList": {
         "text": "Start by adding new plants to your collection"

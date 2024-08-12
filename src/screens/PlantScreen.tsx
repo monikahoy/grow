@@ -124,12 +124,7 @@ const PlantView = ({navigation, route}: any) => {
         <TouchableHighlight onPress={onPressDelete} underlayColor="transparent">
           <Image
             source={require('../../assets/icons/icon_delete.png')}
-            style={{
-              width: 20,
-              height: 20,
-              alignSelf: 'flex-end',
-              marginRight: 10,
-            }}
+            style={styles.deleteIcon}
           />
         </TouchableHighlight>
         <View style={styles.topContainer}>
@@ -148,9 +143,9 @@ const PlantView = ({navigation, route}: any) => {
               <Text style={[styles.date, {fontSize: 16}]}>
                 {formatDate(item.createdAt.toDate())}
               </Text>
-              <Pressable onPress={() => onAddNoteEntry(item.id)}>
+              <Pressable onPress={() => onAddNoteEntry(item.id)} hitSlop={30}>
                 <Text style={[styles.date, {fontSize: 16}]}>
-                  {item.noteEntry ? item.noteEntry : 'Add Note'}
+                  {item.noteEntry ? t('noteEntry.show') : t('noteEntry.add')}
                 </Text>
               </Pressable>
             </View>
@@ -168,6 +163,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'transparent',
+  },
+  deleteIcon: {
+    width: 20,
+    height: 20,
+    alignSelf: 'flex-end',
+    marginRight: 10,
   },
   container: {
     flex: 1,
