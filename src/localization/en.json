@@ -43,7 +43,15 @@
         "cancelConfirmText": "You will lose any unsaved changes.",
         "cancelConfirmOk": "Yes, I am sure",
         "cancelConfirmNo": "No, I want to stay"
-
+      },
+      "emptyList": {
+        "text": "Start by adding new plants to your collection"
+      },
+      "deletePlant": {
+        "title": "Delete plant",
+        "text": "Are you sure you want to delete this plant?",
+        "ok": "Yes, delete",
+        "no": "No, keep"
       }
       
    }

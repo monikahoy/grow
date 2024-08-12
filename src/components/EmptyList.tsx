@@ -2,13 +2,13 @@ import React from 'react';
 import {View, StyleSheet, Text} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
+import {useTranslation} from 'react-i18next';
 
 const EmptyList = () => {
+  const {t} = useTranslation();
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>
-        Start by adding new plants to your collection
-      </Text>
+      <Text style={styles.text}>{t('emptyList.text')} </Text>
     </View>
   );
 };

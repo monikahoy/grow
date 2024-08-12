@@ -5,6 +5,7 @@ import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
 import {deleteDocumentFromFirebase, formatDate, getUserId} from '../../utils';
 import {Timestamp} from 'firebase/firestore';
+import {useTranslation} from 'react-i18next';
 
 type PlantItem = {
   name: string;
@@ -23,6 +24,7 @@ export const PlantItem = ({
   onPress,
   onDelete,
 }: PlantItem) => {
+  const {t} = useTranslation();
   const userId = getUserId();
   if (!userId) {
     // handle error
@@ -36,13 +38,13 @@ export const PlantItem = ({
   };
 
   const onPressDelete = async () => {
-    Alert.alert('Delete Plant', 'Are you sure you want to delete this plant?', [
+    Alert.alert(t('deletePlant.title'), t('deletePlant.text'), [
       {
-        text: 'Cancel',
+        text: t('deletePlant.no'),
         style: 'cancel',
       },
       {
-        text: 'Delete',
+        text: t('deletePlant.ok'),
         onPress: () => deletePlant(),
       },
     ]);
