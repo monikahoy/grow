@@ -9,11 +9,11 @@ import {
   View,
 } from 'react-native';
 import {updateDoc, doc} from 'firebase/firestore';
-import {db} from '../../../firebaseConfig';
-import {getUserId} from '../../../utils';
-import Colors from '../../theme/Colors';
-import Button from '../../components/Button';
-import Fonts from '../../theme/Fonts';
+import {db} from '../../firebaseConfig';
+import {getUserId} from '../../utils';
+import Colors from '../theme/Colors';
+import Button from '../components/Button';
+import Fonts from '../theme/Fonts';
 import {useTranslation} from 'react-i18next';
 
 const screenHeight = Dimensions.get('window').height;

@@ -9,25 +9,22 @@ import {
   Pressable,
   ActivityIndicator,
 } from 'react-native';
-import Colors from '../../theme/Colors';
-import Fonts from '../../theme/Fonts';
-import RoundButton from '../../components/RoundButton';
+import Colors from '../theme/Colors';
+import Fonts from '../theme/Fonts';
+import RoundButton from '../components/RoundButton';
 import {useFocusEffect} from '@react-navigation/native';
-import {
-  getUserId,
-  getPlantUpdatesCollection,
-  parseFormattedDate,
-} from '../../../utils';
+import {getUserId, getPlantUpdatesCollection, formatDate} from '../../utils';
 import {useTranslation} from 'react-i18next';
+import {Timestamp} from 'firebase/firestore';
 
 const screenWidth = Dimensions.get('window').width;
 const screenHeight = Dimensions.get('window').height;
 
 interface PlantUpdate {
   id: string;
+  createdAt: Timestamp;
   picture: {
     url: string;
-    createdAt: string; // SHOULD INCLUDE TIME IN THE FUTURE
   };
   noteEntry?: string;
 }
@@ -91,13 +88,6 @@ const PlantView = ({navigation, route}: any) => {
     });
   };
 
-  // Sort plantUpdates by date, newest first
-  const sortedPlantUpdates = plantUpdates.slice().sort((a, b) => {
-    const dateA = parseFormattedDate(a.picture.createdAt);
-    const dateB = parseFormattedDate(b.picture.createdAt);
-    return dateB.getTime() - dateA.getTime();
-  });
-
   if (isLoading) {
     return <LoadingView text={t('plantView.loading')} />;
   }
@@ -110,16 +100,16 @@ const PlantView = ({navigation, route}: any) => {
         </View>
         <View style={styles.detailsContainer}>
           <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.date}>{data.createdAt}</Text>
+          <Text style={styles.date}>{formatDate(data.createdAt.toDate())}</Text>
         </View>
         <View style={styles.imageRow}>
-          {sortedPlantUpdates.map(item => (
+          {plantUpdates.map(item => (
             <View style={styles.imageContainer} key={item.id}>
               {item.picture && (
                 <Image source={{uri: item.picture.url}} style={styles.image} />
               )}
               <Text style={[styles.date, {fontSize: 16}]}>
-                {item.picture.createdAt}
+                {formatDate(item.createdAt.toDate())}
               </Text>
               <Pressable onPress={() => onAddNoteEntry(item.id)}>
                 <Text style={[styles.date, {fontSize: 16}]}>

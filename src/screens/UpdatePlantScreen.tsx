@@ -1,13 +1,13 @@
 import React from 'react';
 import {SafeAreaView, StyleSheet} from 'react-native';
-import CameraCapture from '../../components/Camera';
+import CameraCapture from '../components/Camera';
 import {ref, getDownloadURL, uploadBytes} from 'firebase/storage';
 import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
-import {doc, collection, setDoc, addDoc} from 'firebase/firestore';
-import {db, storage} from '../../../firebaseConfig';
-import {formatDate, getUserId} from '../../../utils';
-import Colors from '../../theme/Colors';
+import {doc, collection, addDoc, Timestamp} from 'firebase/firestore';
+import {db, storage} from '../../firebaseConfig';
+import {getUserId} from '../../utils';
+import Colors from '../theme/Colors';
 
 const AddPlantUpdate = ({navigation, route}: any) => {
   const {data: plantId} = route.params.params; // had to handle nested navigator, why there is params 2 times
@@ -28,11 +28,7 @@ const AddPlantUpdate = ({navigation, route}: any) => {
 
     // Get download URL
     const downloadURL = await getDownloadURL(storageRef);
-
-    const pictureData = {
-      url: downloadURL,
-      createdAt: formatDate(new Date()),
-    };
+    const timestamp = Timestamp.fromDate(new Date());
 
     const updatesSubcollectionRef = collection(
       doc(db, 'users', userId, 'plants', plantId),
@@ -40,7 +36,8 @@ const AddPlantUpdate = ({navigation, route}: any) => {
     );
     // Create a new document with a unique ID in the updates subcollection
     await addDoc(updatesSubcollectionRef, {
-      picture: pictureData,
+      createdAt: timestamp,
+      picture: {url: downloadURL},
     });
 
     navigation.goBack();

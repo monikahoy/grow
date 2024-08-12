@@ -6,13 +6,13 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import Button from '../../components/Button';
-import TextInput from '../../components/TextInput';
-import {auth} from '../../../firebaseConfig';
+import Button from '../components/Button';
+import TextInput from '../components/TextInput';
+import {auth} from '../../firebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {createUserInFirebase, getUserId} from '../../../utils';
+import {createUserInFirebase, getUserId} from '../../utils';
 import {useTranslation} from 'react-i18next';
-import Colors from '../../theme/Colors';
+import Colors from '../theme/Colors';
 
 const Register = () => {
   const {t} = useTranslation();
@@ -95,5 +95,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
+    marginHorizontal: 20,
   },
 });

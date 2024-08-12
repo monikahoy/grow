@@ -11,12 +11,12 @@ type RoundButtonProps = {
   disabled?: boolean;
 };
 
-const RoundButton: React.FC<RoundButtonProps> = ({
+const RoundButton = ({
   onPress,
   label,
   isCameraButton,
   disabled,
-}) => {
+}: RoundButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}

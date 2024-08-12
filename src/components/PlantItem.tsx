@@ -3,11 +3,12 @@ import {View, Text, StyleSheet, Image, Alert} from 'react-native';
 import {TouchableHighlight} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
-import {deleteDocumentFromFirebase, getUserId} from '../../utils';
+import {deleteDocumentFromFirebase, formatDate, getUserId} from '../../utils';
+import {Timestamp} from 'firebase/firestore';
 
 type PlantItem = {
   name: string;
-  date?: string;
+  timestamp: Timestamp;
   id: string;
   image: string;
   onPress: () => void;
@@ -16,7 +17,7 @@ type PlantItem = {
 
 export const PlantItem = ({
   name,
-  date,
+  timestamp,
   id,
   image,
   onPress,
@@ -53,7 +54,7 @@ export const PlantItem = ({
         <Image source={{uri: image}} style={styles.image} />
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{name}</Text>
-          <Text style={styles.date}>{date}</Text>
+          <Text style={styles.date}>{formatDate(timestamp.toDate())}</Text>
         </View>
         <TouchableHighlight onPress={onPressDelete} underlayColor="transparent">
           <Image

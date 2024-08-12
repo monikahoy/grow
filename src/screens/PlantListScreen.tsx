@@ -1,18 +1,18 @@
-import React, {useCallback, useState, useEffect} from 'react';
-import {View, FlatList, StyleSheet, Text} from 'react-native';
-import PlantItem from '../../components/PlantItem';
-import RoundButton from '../../components/RoundButton';
-import AddPlant from '../AddPlant';
-import Colors from '../../theme/Colors';
-import {getUserId, getUserPlantDataFromFirebase} from '../../../utils';
+import React, {useCallback, useState} from 'react';
+import {View, FlatList, StyleSheet} from 'react-native';
+import PlantItem from '../components/PlantItem';
+import RoundButton from '../components/RoundButton';
+import AddPlant from './AddPlantScreen';
+import Colors from '../theme/Colors';
+import {getUserId, getUserPlantDataFromFirebase} from '../../utils';
 import {useFocusEffect} from '@react-navigation/native';
-import EmptyList from '../../components/EmptyList';
+import EmptyList from '../components/EmptyList';
 import {useTranslation} from 'react-i18next';
 
 type Plant = {
   id: string;
   name: string;
-  createdAt: string;
+  createdAt: Date;
   photoURL: string;
 };
 
@@ -25,8 +25,7 @@ const PlantsList = ({navigation}: any) => {
   const getData = useCallback(async () => {
     try {
       const dbData: Plant[] = await getUserPlantDataFromFirebase(userId);
-      const sortedData = dbData.sort((a, b) => a.name.localeCompare(b.name));
-      setPlantData(sortedData);
+      setPlantData(dbData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
@@ -59,7 +58,7 @@ const PlantsList = ({navigation}: any) => {
         <PlantItem
           id={item.id}
           name={item.name}
-          date={item.createdAt}
+          timestamp={item.createdAt}
           image={item.photoURL}
           onPress={handlePressItem(item)}
           onDelete={onDeleteItem}

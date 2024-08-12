@@ -6,17 +6,12 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import Button from '../../components/Button';
-import TextInput from '../../components/TextInput';
-import Register from '../Register';
+import Button from '../components/Button';
+import TextInput from '../components/TextInput';
+import Register from './RegisterScreen';
 import {useTranslation} from 'react-i18next';
-
-import Colors from '../../theme/Colors';
-
-const emailInputPlaceholder = 'Email';
-const passwordPlaceholder = 'Password';
-const ctaSignIn = 'Sign in';
-import {auth} from '../../../firebaseConfig';
+import Colors from '../theme/Colors';
+import {auth} from '../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
 
 const Login = ({navigation}: any) => {

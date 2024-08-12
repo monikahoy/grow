@@ -1,4 +1,12 @@
-import {setDoc, doc, getDocs, collection, deleteDoc} from 'firebase/firestore';
+import {
+  setDoc,
+  doc,
+  getDocs,
+  collection,
+  deleteDoc,
+  query,
+  orderBy,
+} from 'firebase/firestore';
 import {auth, db} from './firebaseConfig';
 import plantNames from './plant-names';
 import {parse} from 'date-fns';
@@ -33,7 +41,12 @@ export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   const userPLantsCollectionRef = collection(db, 'users', userId, 'plants');
 
   try {
-    const querySnapshot = await getDocs(userPLantsCollectionRef);
+    // Create a query to order by the createdAt field
+    const updatesQuery = query(
+      userPLantsCollectionRef,
+      orderBy('createdAt', 'desc'),
+    );
+    const querySnapshot = await getDocs(updatesQuery);
     const userData: any = [];
     // Loop through the documents in the querySnapshot
     querySnapshot.forEach(doc => {
@@ -70,30 +83,36 @@ export const getPlantUpdatesCollection = async (
   userId: string | null,
   plantId: string | null,
 ) => {
-  if (!userId) {
-    return null;
-  }
-  if (!plantId) {
+  if (!userId || !plantId) {
     return null;
   }
 
-  // Create a reference to the document
-  const updatesSubcollectionRef = collection(
-    doc(db, 'users', userId, 'plants', plantId),
-    'updates',
-  );
-  // Get the documents
   try {
-    const documentSnapshot = await getDocs(updatesSubcollectionRef);
+    // Create a reference to the updates subcollection
+    const updatesSubcollectionRef = collection(
+      doc(db, 'users', userId, 'plants', plantId),
+      'updates',
+    );
 
-    // Map over the documents
+    // Create a query to order by the createdAt field
+    const updatesQuery = query(
+      updatesSubcollectionRef,
+      orderBy('createdAt', 'desc'),
+    );
+
+    // Get the documents using the query
+    const documentSnapshot = await getDocs(updatesQuery);
+
+    // Map over the documents and return the data
     const data = documentSnapshot.docs.map(doc => ({
       id: doc.id,
       ...doc.data(),
     }));
+
     return data;
   } catch (error) {
     console.error('Error getting plant data:', error);
+    return null;
   }
 };
 

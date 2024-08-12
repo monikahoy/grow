@@ -1,12 +1,12 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import AddPlant from '../screens/AddPlant';
-import AddPlantUpdate from '../screens/AddPlantUpdate';
-import PlantsList from '../screens/PlantsList';
-import PlantView from '../screens/PlantView';
+import AddPlant from '../screens/AddPlantScreen';
+import AddPlantUpdate from '../screens/UpdatePlantScreen';
+import PlantsList from '../screens/PlantListScreen';
+import PlantView from '../screens/PlantScreen';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
-import NoteEntry from '../screens/NoteEntry';
+import NoteEntry from '../screens/NoteEntryScreen';
 import {Alert, Image, TouchableOpacity} from 'react-native';
 import {auth} from '../../firebaseConfig';
 import {signOut} from 'firebase/auth';
