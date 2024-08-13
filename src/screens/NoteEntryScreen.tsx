@@ -13,11 +13,12 @@ import {
 } from 'react-native';
 import {updateDoc, doc} from 'firebase/firestore';
 import {db} from '../../firebaseConfig';
-import {getUserId} from '../../utils';
+import {getUserId} from '../utils/utils';
 import Colors from '../theme/Colors';
 import Button from '../components/Button';
 import Fonts from '../theme/Fonts';
 import {useTranslation} from 'react-i18next';
+import {useCustomAlert} from '../hooks/useCustomAlert';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -25,6 +26,7 @@ const NoteEntry = ({navigation, route}: any) => {
   const {t} = useTranslation();
   const {plantId, updateId, note} = route.params.params.data; // had to handle nested navigator, why there is params 2 times
   const [text, setText] = useState(note);
+  const {showCancelConfirmationAlert} = useCustomAlert();
 
   const onChangeText = (text: string) => {
     setText(text);
@@ -71,24 +73,8 @@ const NoteEntry = ({navigation, route}: any) => {
     }
   };
 
-  const handleOnDelete = async () => {
-    // add delete note functionality
-  };
-
   const handleOnCancel = () => {
-    Alert.alert(
-      t('noteEntry.cancelConfirmTitle'),
-      t('noteEntry.cancelConfirmText'),
-      [
-        {
-          text: t('noteEntry.cancelConfirmNo'),
-        },
-        {
-          text: t('noteEntry.cancelConfirmOk'),
-          onPress: handleGoBack, // Reference to the function
-        },
-      ],
-    );
+    showCancelConfirmationAlert(handleGoBack);
   };
 
   return (
@@ -115,11 +101,6 @@ const NoteEntry = ({navigation, route}: any) => {
               <Button
                 onPress={handleOnNoteEntry}
                 title={t('noteEntry.ctaSave')}
-                disabled={!text}
-              />
-              <Button
-                onPress={handleOnDelete}
-                title={t('noteEntry.ctaDelete')}
                 disabled={!text}
               />
             </View>
