@@ -31,11 +31,7 @@ const PlantUpdateItem = ({
       {picture && <Image source={{uri: picture.url}} style={styles.image} />}
       <View style={styles.textContainer}>
         <Text style={styles.date}>{formatDate(createdAt.toDate())}</Text>
-        <View
-          style={{
-            justifyContent: 'space-between',
-            flex: 1,
-          }}>
+        <View style={styles.flexStyle}>
           <Pressable onPress={() => onAddNote(id)} hitSlop={30}>
             <Text style={styles.note} numberOfLines={6}>
               {noteEntry ? noteEntry : `${'📔'} ${t('noteEntry.add')}`}
@@ -64,7 +60,10 @@ const styles = StyleSheet.create({
     padding: 20,
     gap: 10,
   },
-
+  flexStyle: {
+    justifyContent: 'space-between',
+    flex: 1,
+  },
   image: {
     width: '50%',
     aspectRatio: 3 / 4,
