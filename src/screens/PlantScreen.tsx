@@ -9,7 +9,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import {
   getUserId,
   getPlantUpdatesCollection,
-  deletePlantCollectionFromFirebase,
+  deletePlantDocFromFirebase,
   deletePlantUpdateFromFirebase,
 } from '../utils/utils';
 import {useTranslation} from 'react-i18next';
@@ -106,7 +106,7 @@ const PlantUpdatesScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
   };
 
   const deletePlant = async () => {
-    await deletePlantCollectionFromFirebase(userId, plantId);
+    await deletePlantDocFromFirebase(userId, plantId);
     navigation.navigate('Home');
   };
 

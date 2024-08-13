@@ -100,7 +100,7 @@ export const getPlantUpdatesCollection = async (
 };
 
 // Function to delete a plant collection from Firestore
-export const deletePlantCollectionFromFirebase = async (
+export const deletePlantDocFromFirebase = async (
   userId: string | null,
   plantId: string | null,
 ) => {
