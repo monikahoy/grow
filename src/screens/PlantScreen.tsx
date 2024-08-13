@@ -1,31 +1,21 @@
-import React, {useCallback, useState} from 'react';
-import {
-  View,
-  StyleSheet,
-  Text,
-  Image,
-  ScrollView,
-  Dimensions,
-  Pressable,
-  ActivityIndicator,
-  TouchableHighlight,
-  Alert,
-} from 'react-native';
+import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
+import {View, StyleSheet, Text, Image, FlatList, Pressable} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
 import RoundButton from '../components/RoundButton';
+import LoadingView from '../components/LoadingView';
+import PlantUpdateItem from '../components/PlantUpdateItem';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   getUserId,
   getPlantUpdatesCollection,
-  formatDate,
-  deleteDocumentFromFirebase,
-} from '../../utils';
+  deletePlantCollectionFromFirebase,
+  deletePlantUpdateFromFirebase,
+} from '../utils/utils';
 import {useTranslation} from 'react-i18next';
 import {Timestamp} from 'firebase/firestore';
-
-const screenWidth = Dimensions.get('window').width;
-const screenHeight = Dimensions.get('window').height;
+import {useCustomAlert} from '../hooks/useCustomAlert';
+import {NavigationProp, RouteProp} from '@react-navigation/native';
 
 interface PlantUpdate {
   id: string;
@@ -36,37 +26,43 @@ interface PlantUpdate {
   noteEntry?: string;
 }
 
-interface LoadingViewProps {
-  text: string;
-}
+type PlantUpdatesScreenProps = {
+  navigation: NavigationProp<any>;
+  route: RouteProp<any>;
+};
 
-const LoadingView = ({text}: LoadingViewProps) => (
-  <View style={styles.activityIndicator}>
-    <Text>{text}</Text>
-    <ActivityIndicator />
-  </View>
-);
+const isDataSame = (currentData: PlantUpdate[], newData: PlantUpdate[]) => {
+  if (currentData.length !== newData.length) {
+    return false;
+  }
+  for (let i = 0; i < currentData.length; i++) {
+    if (currentData[i].noteEntry !== newData[i].noteEntry) {
+      return false;
+    }
+  }
+  return true;
+};
 
-const PlantView = ({navigation, route}: any) => {
+const PlantUpdatesScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
   const {t} = useTranslation();
-  const [data] = useState(route.params.item);
+  const [data] = useState(route.params?.item);
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const {showDeletePlantAlert, showDeleteUpdateAlert} = useCustomAlert();
   const plantId = data.id;
 
   const userId = getUserId();
-  if (!userId) {
-    // handle error (e.g., redirect or show an error message)
-    return null; // or a fallback UI
-  }
 
   const getPlantData = useCallback(async () => {
     try {
-      setIsLoading(true);
+      if (plantUpdates.length === 0) {
+        setIsLoading(true);
+      }
       const dbData: any = await getPlantUpdatesCollection(userId, plantId);
-      setPlantUpdates(dbData);
+      if (!isDataSame(dbData, plantUpdates)) {
+        setPlantUpdates(dbData);
+      }
     } catch (error) {
-      // handle error (e.g., show an alert or a notification)
       console.error('Error fetching plant updates:', error);
     } finally {
       setIsLoading(false);
@@ -78,6 +74,20 @@ const PlantView = ({navigation, route}: any) => {
       getPlantData();
     }, [getPlantData]),
   );
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Pressable onPress={onDeletePlant}>
+          <Image
+            source={require('../../assets/icons/icon_delete.png')}
+            style={styles.deleteIcon}
+            tintColor={Colors.darkpurple}
+          />
+        </Pressable>
+      ),
+    });
+  }, [navigation]);
 
   const onAddPicture = () => {
     navigation.navigate('AddPicture', {
@@ -95,131 +105,89 @@ const PlantView = ({navigation, route}: any) => {
     });
   };
 
+  const deletePlant = async () => {
+    await deletePlantCollectionFromFirebase(userId, plantId);
+    navigation.navigate('Home');
+  };
+
+  const onDeletePlant = async () => {
+    showDeletePlantAlert(deletePlant);
+  };
+
+  const deleteUpdate = async (inputId: string) => {
+    const update = plantUpdates.find(item => item.id === inputId);
+    const updateId = update?.id;
+    if (!updateId) {
+      return;
+    }
+    await deletePlantUpdateFromFirebase(userId, plantId, updateId);
+    getPlantData();
+  };
+
+  const onDeleteUpdate = async (id: string) => {
+    showDeleteUpdateAlert(() => deleteUpdate(id));
+  };
+
+  const showDeleteIcon = useMemo(
+    () => plantUpdates.length > 1,
+    [plantUpdates.length],
+  );
+
+  const renderItem = useCallback(
+    ({item}: {item: PlantUpdate}) => (
+      <PlantUpdateItem
+        id={item.id}
+        createdAt={item.createdAt}
+        picture={item.picture}
+        noteEntry={item.noteEntry}
+        showDeleteIcon={showDeleteIcon}
+        onAddNote={onAddNoteEntry}
+        onDelete={onDeleteUpdate}
+      />
+    ),
+    [onAddNoteEntry, onDeleteUpdate, showDeleteIcon],
+  );
+
   if (isLoading) {
     return <LoadingView text={t('plantView.loading')} />;
   }
 
-  const deletePlant = async () => {
-    // Delete plant from Firebase
-    await deleteDocumentFromFirebase(userId, plantId);
-    navigation.navigate('Home');
-  };
-
-  const onPressDelete = async () => {
-    Alert.alert(t('deletePlant.title'), t('deletePlant.text'), [
-      {
-        text: t('deletePlant.no'),
-        style: 'cancel',
-      },
-      {
-        text: t('deletePlant.ok'),
-        onPress: () => deletePlant(),
-      },
-    ]);
-  };
-
   return (
     <View style={styles.container}>
-      <ScrollView>
-        <TouchableHighlight onPress={onPressDelete} underlayColor="transparent">
-          <Image
-            source={require('../../assets/icons/icon_delete.png')}
-            style={styles.deleteIcon}
-          />
-        </TouchableHighlight>
-        <View style={styles.topContainer}>
-          <Image source={{uri: data.photoURL}} style={styles.topImage} />
-        </View>
-        <View style={styles.detailsContainer}>
-          <Text style={styles.name}>{data.name}</Text>
-          <Text style={styles.date}>{formatDate(data.createdAt.toDate())}</Text>
-        </View>
-        <View style={styles.imageRow}>
-          {plantUpdates.map(item => (
-            <View style={styles.imageContainer} key={item.id}>
-              {item.picture && (
-                <Image source={{uri: item.picture.url}} style={styles.image} />
-              )}
-              <Text style={[styles.date, {fontSize: 16}]}>
-                {formatDate(item.createdAt.toDate())}
-              </Text>
-              <Pressable onPress={() => onAddNoteEntry(item.id)} hitSlop={30}>
-                <Text style={[styles.date, {fontSize: 16}]}>
-                  {item.noteEntry ? t('noteEntry.show') : t('noteEntry.add')}
-                </Text>
-              </Pressable>
-            </View>
-          ))}
-        </View>
-      </ScrollView>
+      <FlatList
+        data={plantUpdates}
+        renderItem={renderItem}
+        keyExtractor={item => item.id}
+        ListHeaderComponent={
+          <View style={styles.topContainer}>
+            <Text style={styles.name}>{data.name}</Text>
+          </View>
+        }
+      />
       <RoundButton onPress={onAddPicture} label={t('plantView.ctaAdd')} />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  activityIndicator: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
   deleteIcon: {
     width: 20,
     height: 20,
-    alignSelf: 'flex-end',
-    marginRight: 10,
+    marginRight: 5,
   },
   container: {
     flex: 1,
-    paddingTop: 20,
     backgroundColor: Colors.background,
   },
-  detailsContainer: {
-    justifyContent: 'flex-start',
+  topContainer: {
     alignItems: 'center',
-    paddingBottom: 10,
+    paddingVertical: 20,
   },
   name: {
     color: Colors.basicText,
     fontFamily: Fonts.titleFont,
     fontSize: 20,
-    marginBottom: 10,
-  },
-  date: {
-    color: Colors.secondaryText,
-    fontFamily: Fonts.subtitleFont,
-    fontSize: 18,
-  },
-  topContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: screenHeight / 3,
-    flex: 1,
-  },
-  topImage: {
-    height: '100%',
-    aspectRatio: 3 / 4,
-    borderRadius: 5,
-  },
-  imageRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    padding: 10,
-  },
-  imageContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    paddingBottom: 10,
-    width: screenWidth / 2 - 20,
-  },
-  image: {
-    width: '100%',
-    aspectRatio: 3 / 4,
-    borderRadius: 5,
-    marginVertical: 10,
   },
 });
 
-export default PlantView;
+export default PlantUpdatesScreen;
