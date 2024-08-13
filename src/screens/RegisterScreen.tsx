@@ -10,7 +10,7 @@ import Button from '../components/Button';
 import TextInput from '../components/TextInput';
 import {auth} from '../../firebaseConfig';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
-import {createUserInFirebase, getUserId} from '../../utils';
+import {createUserInFirebase, getUserId} from '../utils/utils';
 import {useTranslation} from 'react-i18next';
 import Colors from '../theme/Colors';
 
