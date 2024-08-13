@@ -6,7 +6,7 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import {collection, addDoc, updateDoc, Timestamp} from 'firebase/firestore';
 import {db, storage} from '../../firebaseConfig';
-import {getRandomPlantName, getUserId} from '../../utils';
+import {getRandomPlantName, getUserId} from '../utils/utils';
 import Colors from '../theme/Colors';
 import {NavigationProp} from '@react-navigation/native';
 
@@ -30,9 +30,21 @@ const AddPlant = ({navigation}: AddPlantProps) => {
       const plantsCollectionRef = collection(db, 'users', userId, 'plants');
       const timestamp = Timestamp.fromDate(new Date());
       const newPlantRef = await addDoc(plantsCollectionRef, {
-        photoURL: downloadURL,
         createdAt: timestamp,
         name: getRandomPlantName(),
+      });
+
+      const updatesCollectionRef = collection(
+        db,
+        'users',
+        userId,
+        'plants',
+        newPlantRef.id,
+        'updates',
+      );
+      await addDoc(updatesCollectionRef, {
+        createdAt: timestamp,
+        picture: {url: downloadURL},
       });
 
       const newPlantId = newPlantRef.id;

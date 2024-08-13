@@ -23,12 +23,20 @@
           "confirmPassword": "Passwords do not match"
         }
       },
+      "signOut": {
+        "title": "Sign out",
+        "text": "Are you sure you want to sign out?",
+        "cancel": "No, stay signed in",
+        "confirm": "Yes, sign out"
+      },
       "plantsList": {
         "ctaAddPlant": "New"
       },
       "plantView": {
         "ctaAdd": "Add",
-        "loading": "Loading your plant"
+        "loading": "Loading your plant",
+        "created": "Created: ",
+        "updated": "Latest update: "
       },
       "camera": {
         "retake": "Retake",
@@ -54,7 +62,13 @@
         "text": "Are you sure you want to delete this plant?",
         "ok": "Yes, delete",
         "no": "No, keep"
+      }, 
+      "deleteUpdate": 
+      {
+        "title": "Delete update",
+        "text": "Are you sure you want to delete this update?",
+        "ok": "Yes, delete",
+        "no": "No, keep"
       }
-      
    }
   }

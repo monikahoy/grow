@@ -3,41 +3,20 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddPlant from '../screens/AddPlantScreen';
 import AddPlantUpdate from '../screens/UpdatePlantScreen';
 import PlantsList from '../screens/PlantListScreen';
-import PlantView from '../screens/PlantScreen';
+import PlantUpdatesScreen from '../screens/PlantScreen';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
 import NoteEntry from '../screens/NoteEntryScreen';
 import {Alert, Image, TouchableOpacity} from 'react-native';
-import {auth} from '../../firebaseConfig';
-import {signOut} from 'firebase/auth';
+import {useCustomAlert} from '../hooks/useCustomAlert';
 
 const Stack = createNativeStackNavigator();
 
-const onSignOut = () => {
-  Alert.alert(
-    'Sign out',
-    'Are you sure you want to sign out?',
-    [
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-      {
-        text: 'Sign out',
-        onPress: () => {
-          signOut(auth)
-            .then(() => {})
-            .catch(error => {
-              console.error('Error signing out:', error);
-            });
-        },
-      },
-    ],
-    {cancelable: false},
-  );
-};
-
 const SignedInStack = () => {
+  const {showSignOutAlert} = useCustomAlert();
+  const onSignOut = () => {
+    showSignOutAlert();
+  };
   return (
     <Stack.Navigator
       screenOptions={{
@@ -81,7 +60,7 @@ const SignedInStack = () => {
       />
       <Stack.Screen
         name="PlantView"
-        component={PlantView}
+        component={PlantUpdatesScreen}
         options={{title: 'Your plant'}}
       />
       <Stack.Screen

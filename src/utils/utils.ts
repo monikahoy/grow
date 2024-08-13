@@ -7,9 +7,8 @@ import {
   query,
   orderBy,
 } from 'firebase/firestore';
-import {auth, db} from './firebaseConfig';
-import plantNames from './plant-names';
-import {parse} from 'date-fns';
+import {auth, db} from '../../firebaseConfig';
+import plantNames from '../../plant-names';
 
 // This function creates a new user in the 'users' collection in Firebase
 export const createUserInFirebase = async (userId: string | null) => {
@@ -28,11 +27,12 @@ export const createUserInFirebase = async (userId: string | null) => {
   }
 };
 
+// Function to get user ID
 export const getUserId = () => {
   return auth.currentUser ? auth.currentUser.uid : null;
 };
 
-// Get data from the 'users' collection in Firebase
+// Function to fetch plant updates from Firestore
 export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   if (!userId) {
     return null;
@@ -59,26 +59,7 @@ export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   }
 };
 
-export const deleteDocumentFromFirebase = async (
-  userId: string | null,
-  plantId: string | null,
-) => {
-  if (!userId) {
-    return;
-  }
-  if (!plantId) {
-    return;
-  }
-
-  const collectionRef = doc(db, 'users', userId, 'plants', plantId);
-  try {
-    await deleteDoc(collectionRef);
-  } catch (error) {
-    console.error('Error deleting document:', error);
-  }
-};
-
-// Get data from the 'plants' document in Firebase
+// Function to delete a plant collection from Firestore
 export const getPlantUpdatesCollection = async (
   userId: string | null,
   plantId: string | null,
@@ -106,7 +87,9 @@ export const getPlantUpdatesCollection = async (
     // Map over the documents and return the data
     const data = documentSnapshot.docs.map(doc => ({
       id: doc.id,
-      ...doc.data(),
+      createdAt: doc.data().createdAt,
+      picture: doc.data().picture,
+      noteEntry: doc.data().noteEntry,
     }));
 
     return data;
@@ -116,7 +99,60 @@ export const getPlantUpdatesCollection = async (
   }
 };
 
-export const saveNoteAboutPlant = async (
+// Function to delete a plant collection from Firestore
+export const deletePlantDocFromFirebase = async (
+  userId: string | null,
+  plantId: string | null,
+) => {
+  if (!userId) {
+    return;
+  }
+  if (!plantId) {
+    return;
+  }
+
+  const collectionRef = doc(db, 'users', userId, 'plants', plantId);
+  try {
+    await deleteDoc(collectionRef);
+  } catch (error) {
+    console.error('Error deleting document:', error);
+  }
+};
+
+// Function to delete a plant update from Firestore
+export const deletePlantUpdateFromFirebase = async (
+  userId: string | null,
+  plantId: string | null,
+  updateId: string | null,
+) => {
+  if (!userId) {
+    return;
+  }
+  if (!plantId) {
+    return;
+  }
+  if (!updateId) {
+    return;
+  }
+
+  const collectionRef = doc(
+    db,
+    'users',
+    userId,
+    'plants',
+    plantId,
+    'updates',
+    updateId,
+  );
+  try {
+    await deleteDoc(collectionRef);
+  } catch (error) {
+    console.error('Error deleting document:', error);
+  }
+};
+
+// Function to save a note about a plant
+export const savePlantNoteInFirebase = async (
   userId: string | null,
   plantId: string | null,
   note: string,
@@ -136,6 +172,9 @@ export const saveNoteAboutPlant = async (
   }
 };
 
+// Non firebase funtions
+
+// Function to format a date into a readable string
 export const formatDate = (date: Date): string => {
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
@@ -145,11 +184,7 @@ export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', options).format(date);
 };
 
-// had to add parsing function since images are saved in string format and not ISO - update for future
-export const parseFormattedDate = (dateStr: string): Date => {
-  return parse(dateStr, 'MMMM d, yyyy', new Date());
-};
-
+// Function to get a random plant name NEED AN UPDATE
 const usedNames = new Set();
 
 export const getRandomPlantName = () => {
