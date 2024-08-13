@@ -6,9 +6,11 @@ import {
   deleteDoc,
   query,
   orderBy,
+  limit,
 } from 'firebase/firestore';
 import {auth, db} from '../../firebaseConfig';
 import plantNames from '../../plant-names';
+import {PlantUpdate} from './models';
 
 // This function creates a new user in the 'users' collection in Firebase
 export const createUserInFirebase = async (userId: string | null) => {
@@ -32,7 +34,7 @@ export const getUserId = () => {
   return auth.currentUser ? auth.currentUser.uid : null;
 };
 
-// Function to fetch plant updates from Firestore
+// Function to fetch plant data from Firestore
 export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   if (!userId) {
     return null;
@@ -59,7 +61,7 @@ export const getUserPlantDataFromFirebase = async (userId: string | null) => {
   }
 };
 
-// Function to delete a plant collection from Firestore
+// Function to get plant updates collection from Firestore
 export const getPlantUpdatesCollection = async (
   userId: string | null,
   plantId: string | null,
@@ -100,6 +102,50 @@ export const getPlantUpdatesCollection = async (
 };
 
 // Function to delete a plant collection from Firestore
+export const getLatestPlantUpdate = async (
+  userId: string | null,
+  plantId: string | null,
+): Promise<PlantUpdate | null> => {
+  if (!userId || !plantId) {
+    return null;
+  }
+
+  try {
+    // Create a reference to the updates subcollection
+    const updatesSubcollectionRef = collection(
+      doc(db, 'users', userId, 'plants', plantId),
+      'updates',
+    );
+
+    // Create a query to order by the createdAt field
+    const updatesQuery = query(
+      updatesSubcollectionRef,
+      orderBy('createdAt', 'desc'),
+      limit(1),
+    );
+
+    // Get the documents using the query
+    const documentSnapshot = await getDocs(updatesQuery);
+
+    // Map over the documents and return the data
+    const data = documentSnapshot.docs.map(doc => ({
+      id: doc.id,
+      createdAt: doc.data().createdAt,
+      picture: doc.data().picture,
+      noteEntry: doc.data().noteEntry,
+    }));
+
+    if (data.length === 0) {
+      return null;
+    }
+    return data[0];
+  } catch (error) {
+    console.error('Error getting plant data:', error);
+    return null;
+  }
+};
+
+// Function to delete a plant document in the plants collection from Firestore
 export const deletePlantDocFromFirebase = async (
   userId: string | null,
   plantId: string | null,

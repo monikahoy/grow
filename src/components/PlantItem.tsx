@@ -1,17 +1,35 @@
-import React, {memo} from 'react';
+import React, {memo, useCallback, useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableHighlight} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
-import {getUserId} from '../utils/utils';
+import {getLatestPlantUpdate, getUserId} from '../utils/utils';
 
 type PlantItemProps = {
+  plantId: string;
   name: string;
-  image: string;
   onPress: () => void;
 };
 
-const PlantItem = memo(({name, image, onPress}: PlantItemProps) => {
+const PlantItem = memo(({plantId, name, onPress}: PlantItemProps) => {
+  const [image, setImage] = useState<string>('');
   const userId = getUserId();
+
+  const fetchAndSetImage = useCallback(
+    async (userId: string, plantId: string) => {
+      const latestUpdatePromise = await getLatestPlantUpdate(userId, plantId);
+      if (latestUpdatePromise !== null) {
+        setImage(latestUpdatePromise.picture.url);
+      }
+    },
+    [userId, plantId],
+  );
+
+  useLayoutEffect(() => {
+    if (userId && image === '') {
+      fetchAndSetImage(userId, plantId);
+    }
+  }, [fetchAndSetImage, userId, plantId, image]);
+
   if (!userId) {
     return null;
   }
