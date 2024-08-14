@@ -15,7 +15,7 @@ import {
 import {useTranslation} from 'react-i18next';
 import {useCustomAlert} from '../hooks/useCustomAlert';
 import {NavigationProp, RouteProp} from '@react-navigation/native';
-import {isSamePlantUpdateArray} from '../utils/isSamePlantUpdateArray';
+import {isSamePlantUpdateArray} from '../utils/utils';
 import {PlantUpdate} from '../utils/models';
 
 type PlantUpdatesScreenProps = {
