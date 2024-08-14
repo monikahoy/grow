@@ -28,7 +28,11 @@ const PlantUpdateItem = ({
 }: PlantUpdate) => {
   return (
     <View style={styles.container}>
-      {picture && <Image source={{uri: picture.url}} style={styles.image} />}
+      {picture && (
+        <Pressable onPress={() => onAddNote(id)} style={styles.imagePressable}>
+          <Image source={{uri: picture.url}} style={styles.image} />
+        </Pressable>
+      )}
       <View style={styles.textContainer}>
         <Text style={styles.date}>{formatDate(createdAt.toDate())}</Text>
         <View style={styles.flexStyle}>
@@ -64,8 +68,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     flex: 1,
   },
-  image: {
+  imagePressable: {
     width: '50%',
+  },
+  image: {
+    width: '100%',
     aspectRatio: 3 / 4,
     borderRadius: 5,
   },

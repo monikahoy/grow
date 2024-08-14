@@ -38,7 +38,11 @@ const PlantItem = memo(({plantId, name, onPress}: PlantItemProps) => {
     <TouchableHighlight onPress={onPress} underlayColor="transparent">
       <View style={styles.container}>
         <Text style={styles.title}>{name}</Text>
-        <Image source={{uri: image}} style={styles.image} />
+        {image ? (
+          <Image source={{uri: image}} style={styles.image} />
+        ) : (
+          <View style={styles.image} />
+        )}
       </View>
     </TouchableHighlight>
   );

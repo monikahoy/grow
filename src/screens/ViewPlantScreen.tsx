@@ -29,9 +29,9 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const {showDeletePlantAlert, showDeleteUpdateAlert} = useCustomAlert();
-  const plantId = data.id;
+  const userId = useMemo(() => getUserId(), []);
 
-  const userId = getUserId();
+  const plantId = data.id;
 
   const getPlantData = useCallback(async () => {
     try {
@@ -50,7 +50,7 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
     } finally {
       setIsLoading(false);
     }
-  }, [userId, plantId]);
+  }, [userId, plantId, plantUpdates]);
 
   useFocusEffect(
     useCallback(() => {
@@ -72,12 +72,12 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
     });
   }, [navigation]);
 
-  const onAddPicture = () => {
+  const onAddPicture = useCallback(() => {
     navigation.navigate('AddPicture', {
       screen: 'AddPicture',
       params: {data: plantId},
     });
-  };
+  }, [plantId, navigation]);
 
   const onAddNoteEntry = (updateId: string) => {
     const update = plantUpdates.find(item => item.id === updateId);
@@ -93,9 +93,9 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
     navigation.navigate('Home');
   };
 
-  const onDeletePlant = async () => {
+  const onDeletePlant = useCallback(async () => {
     showDeletePlantAlert(deletePlant);
-  };
+  }, [showDeletePlantAlert, deletePlant]);
 
   const deleteUpdate = async (inputId: string) => {
     const update = plantUpdates.find(item => item.id === inputId);
@@ -107,9 +107,12 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
     getPlantData();
   };
 
-  const onDeleteUpdate = async (id: string) => {
-    showDeleteUpdateAlert(() => deleteUpdate(id));
-  };
+  const onDeleteUpdate = useCallback(
+    async (id: string) => {
+      showDeleteUpdateAlert(() => deleteUpdate(id));
+    },
+    [showDeleteUpdateAlert, deleteUpdate],
+  );
 
   const showDeleteIcon = useMemo(
     () => plantUpdates.length > 1,
