@@ -2,7 +2,7 @@ import React, {memo, useCallback, useLayoutEffect, useState} from 'react';
 import {View, Text, StyleSheet, Image, TouchableHighlight} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
-import {getLatestPlantUpdate, getUserId} from '../utils/utils';
+import {getLatestPlantUpdate, getUserId} from '../utils/data';
 
 type PlantItemProps = {
   plantId: string;

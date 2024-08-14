@@ -6,7 +6,8 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import {collection, addDoc, updateDoc, Timestamp} from 'firebase/firestore';
 import {db, storage} from '../../firebaseConfig';
-import {getRandomPlantName, getUserId} from '../utils/utils';
+import {getRandomPlantName} from '../utils/utils';
+import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
 import {NavigationProp} from '@react-navigation/native';
 

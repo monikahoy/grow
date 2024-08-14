@@ -6,7 +6,7 @@ import 'react-native-get-random-values';
 import {v4 as uuidv4} from 'uuid';
 import {doc, collection, addDoc, Timestamp} from 'firebase/firestore';
 import {db, storage} from '../../firebaseConfig';
-import {getUserId} from '../utils/utils';
+import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
 
 const AddPlantUpdate = ({navigation, route}: any) => {

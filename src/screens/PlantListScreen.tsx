@@ -4,7 +4,7 @@ import PlantItem from '../components/PlantItem';
 import RoundButton from '../components/RoundButton';
 import AddPlant from './AddPlantScreen';
 import Colors from '../theme/Colors';
-import {getUserId, getUserPlantDataFromFirebase} from '../utils/utils';
+import {getUserId, getUserPlantDataFromFirebase} from '../utils/data';
 import {useFocusEffect} from '@react-navigation/native';
 import EmptyList from '../components/EmptyList';
 import {useTranslation} from 'react-i18next';

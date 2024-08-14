@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {updateDoc, doc} from 'firebase/firestore';
 import {db} from '../../firebaseConfig';
-import {getUserId} from '../utils/utils';
+import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
 import Button from '../components/Button';
 import Fonts from '../theme/Fonts';

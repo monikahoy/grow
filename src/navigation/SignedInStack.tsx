@@ -3,7 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import AddPlant from '../screens/AddPlantScreen';
 import AddPlantUpdate from '../screens/UpdatePlantScreen';
 import PlantsList from '../screens/PlantListScreen';
-import PlantUpdatesScreen from '../screens/PlantScreen';
+import ViewPlantScreen from '../screens/ViewPlantScreen';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
 import NoteEntry from '../screens/NoteEntryScreen';
@@ -60,7 +60,7 @@ const SignedInStack = () => {
       />
       <Stack.Screen
         name="PlantView"
-        component={PlantUpdatesScreen}
+        component={ViewPlantScreen}
         options={{title: 'Your plant'}}
       />
       <Stack.Screen

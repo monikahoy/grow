@@ -11,39 +11,19 @@ import {
   getPlantUpdatesCollection,
   deletePlantDocFromFirebase,
   deletePlantUpdateFromFirebase,
-} from '../utils/utils';
+} from '../utils/data';
 import {useTranslation} from 'react-i18next';
-import {Timestamp} from 'firebase/firestore';
 import {useCustomAlert} from '../hooks/useCustomAlert';
 import {NavigationProp, RouteProp} from '@react-navigation/native';
-
-interface PlantUpdate {
-  id: string;
-  createdAt: Timestamp;
-  picture: {
-    url: string;
-  };
-  noteEntry?: string;
-}
+import {isSamePlantUpdateArray} from '../utils/isSamePlantUpdateArray';
+import {PlantUpdate} from '../utils/models';
 
 type PlantUpdatesScreenProps = {
   navigation: NavigationProp<any>;
   route: RouteProp<any>;
 };
 
-const isDataSame = (currentData: PlantUpdate[], newData: PlantUpdate[]) => {
-  if (currentData.length !== newData.length) {
-    return false;
-  }
-  for (let i = 0; i < currentData.length; i++) {
-    if (currentData[i].noteEntry !== newData[i].noteEntry) {
-      return false;
-    }
-  }
-  return true;
-};
-
-const PlantUpdatesScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
+const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
   const {t} = useTranslation();
   const [data] = useState(route.params?.item);
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
@@ -59,8 +39,11 @@ const PlantUpdatesScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
         setIsLoading(true);
       }
       const dbData: any = await getPlantUpdatesCollection(userId, plantId);
-      if (!isDataSame(dbData, plantUpdates)) {
+      if (!isSamePlantUpdateArray(dbData, plantUpdates)) {
+        console.log('Data changed');
         setPlantUpdates(dbData);
+      } else {
+        console.log('Data is the same');
       }
     } catch (error) {
       console.error('Error fetching plant updates:', error);
@@ -190,4 +173,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PlantUpdatesScreen;
+export default ViewPlantScreen;
