@@ -15,12 +15,14 @@ import {
   RouteProp,
 } from '@react-navigation/native';
 import {RootParamList} from '../utils/types';
+import usePlantStore from '../../store/plantsStore';
 
 const AddPlantUpdate = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const route = useRoute<RouteProp<RootParamList, 'AddPicture'>>();
   const plantId = route.params?.data.id;
   const userId = getUserId();
+  const loadPlantUpdates = usePlantStore(state => state.loadPlantUpdates);
 
   if (!userId) {
     // handle error
@@ -43,11 +45,13 @@ const AddPlantUpdate = () => {
       doc(db, 'users', userId, 'plants', plantId),
       'updates',
     );
-    // Create a new document with a unique ID in the updates subcollection
+
     await addDoc(updatesSubcollectionRef, {
       createdAt: timestamp,
       picture: {url: downloadURL},
     });
+
+    loadPlantUpdates(userId, plantId);
 
     navigation.goBack();
   };

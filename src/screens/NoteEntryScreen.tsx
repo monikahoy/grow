@@ -26,6 +26,7 @@ import {
   useRoute,
 } from '@react-navigation/native';
 import {RootParamList} from '../utils/types';
+import usePlantStore from '../../store/plantsStore';
 
 const screenHeight = Dimensions.get('window').height;
 
@@ -33,9 +34,10 @@ const NoteEntry = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const route = useRoute<RouteProp<RootParamList, 'NoteEntry'>>();
   const {t} = useTranslation();
-  const {plantId, updateId, note} = route.params.data; // had to handle nested navigator, why there is params 2 times
+  const {plantId, updateId, note} = route.params.data;
   const [text, setText] = useState(note);
   const {showCancelConfirmationAlert} = useCustomAlert();
+  const onAddNoteEntry = usePlantStore(state => state.addNoteToUpdate);
 
   const onChangeText = (text: string) => {
     setText(text);
@@ -75,6 +77,9 @@ const NoteEntry = () => {
         noteEntry: text,
       });
 
+      // Update the note in the store
+      onAddNoteEntry(plantId, updateId, text);
+
       navigation.goBack(); // Navigate back after successful update
     } catch (error) {
       console.error('Error updating note entry:', error);
@@ -98,6 +103,7 @@ const NoteEntry = () => {
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <View style={styles.contentContainer}>
             <TextInput
+              autoFocus={true}
               onChangeText={onChangeText}
               placeholder={t('noteEntry.placeholder')}
               multiline={true}

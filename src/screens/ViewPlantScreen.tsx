@@ -1,4 +1,4 @@
-import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useMemo} from 'react';
 import {View, StyleSheet, Text, Image, FlatList, Pressable} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
@@ -19,46 +19,39 @@ import {
 import {useTranslation} from 'react-i18next';
 import {useCustomAlert} from '../hooks/useCustomAlert';
 import {NavigationProp, RouteProp} from '@react-navigation/native';
-import {isSamePlantUpdateArray} from '../utils/utils';
 import {PlantUpdate} from '../utils/models';
 import {RootParamList} from '../utils/types';
+import usePlantStore from '../../store/plantsStore';
 
 const ViewPlantScreen = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const route = useRoute<RouteProp<RootParamList, 'PlantView'>>();
   const {t} = useTranslation();
   const data = route.params?.data;
-  const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const plantId = useMemo(() => {
+    return data.id;
+  }, []);
+
+  const {plantUpdates, isLoading, loadPlantUpdates} = usePlantStore(state => ({
+    plantUpdates: state.plantUpdates[plantId] || [],
+    isLoading: state.isLoading,
+    loadPlantUpdates: state.loadPlantUpdates,
+  }));
   const {showDeletePlantAlert, showDeleteUpdateAlert} = useCustomAlert();
   const userId = useMemo(() => getUserId(), []);
+  const deletePlantFromStore = usePlantStore(state => state.deletePlant);
+  const deleteUpdateFromStore = usePlantStore(state => state.deleteUpdate);
 
-  const plantId = data.id;
-
-  const getPlantData = useCallback(async () => {
-    try {
-      if (plantUpdates.length === 0) {
-        setIsLoading(true);
-      }
-      const dbData: any = await getPlantUpdatesCollection(userId, plantId);
-      if (!isSamePlantUpdateArray(dbData, plantUpdates)) {
-        console.log('Data changed');
-        setPlantUpdates(dbData);
-      } else {
-        console.log('Data is the same');
-      }
-    } catch (error) {
-      console.error('Error fetching plant updates:', error);
-    } finally {
-      setIsLoading(false);
+  const getPlantData = useCallback(() => {
+    if (!userId) {
+      return;
     }
-  }, [userId, plantId, plantUpdates]);
+    loadPlantUpdates(userId, plantId);
+  }, [userId, plantId, loadPlantUpdates]);
 
-  useFocusEffect(
-    useCallback(() => {
-      getPlantData();
-    }, [getPlantData]),
-  );
+  useEffect(() => {
+    getPlantData();
+  }, [getPlantData]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -90,6 +83,7 @@ const ViewPlantScreen = () => {
 
   const deletePlant = async () => {
     await deletePlantAndUpdatesFromFirebase(userId, plantId);
+    deletePlantFromStore(plantId);
     navigation.navigate('Home');
   };
 
@@ -98,13 +92,16 @@ const ViewPlantScreen = () => {
   }, [showDeletePlantAlert, deletePlant]);
 
   const deleteUpdate = async (inputId: string) => {
+    // Find the update based on the update id
     const update = plantUpdates.find(item => item.id === inputId);
     const updateId = update?.id;
     if (!updateId) {
+      console.error('Update ID not found.');
       return;
     }
+
     await deletePlantUpdateFromFirebase(userId, plantId, updateId);
-    getPlantData();
+    deleteUpdateFromStore(plantId, updateId);
   };
 
   const onDeleteUpdate = useCallback(

@@ -11,9 +11,13 @@ import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {RootParamList} from '../utils/types';
+import usePlantStore from '../../store/plantsStore';
 
 const AddPlant = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
+  const {loadPlants} = usePlantStore(state => ({
+    loadPlants: state.loadPlants,
+  }));
 
   const handleAddPlant = async (imageBlob: Blob) => {
     try {
@@ -29,31 +33,51 @@ const AddPlant = () => {
 
       const plantsCollectionRef = collection(db, 'users', userId, 'plants');
       const timestamp = Timestamp.fromDate(new Date());
+
+      const plantName = getRandomPlantName();
+
+      // Add new plant to Firebase
       const newPlantRef = await addDoc(plantsCollectionRef, {
         createdAt: timestamp,
-        name: getRandomPlantName(),
+        name: plantName,
       });
 
+      const newPlantId = newPlantRef.id;
+      await updateDoc(newPlantRef, {id: newPlantId});
+
+      // Add the initial update (photo) to the updates subcollection
       const updatesCollectionRef = collection(
         db,
         'users',
         userId,
         'plants',
-        newPlantRef.id,
+        newPlantId,
         'updates',
       );
+
+      const newPlant = {
+        id: newPlantId,
+        createdAt: timestamp.toDate(),
+        name: plantName,
+      };
+
       await addDoc(updatesCollectionRef, {
         createdAt: timestamp,
         picture: {url: downloadURL},
       });
 
-      const newPlantId = newPlantRef.id;
-      await updateDoc(newPlantRef, {id: newPlantId});
+      // Access Zustand store and update state
+      loadPlants(userId);
+
+      // Log state directly from Zustand store
+      console.log('State after addPlant:', usePlantStore.getState().plants);
+
       navigation.navigate('Home');
     } catch (error) {
       console.error('Error handling image blob in parent:', error);
     }
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>

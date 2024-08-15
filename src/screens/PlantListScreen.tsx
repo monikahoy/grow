@@ -1,50 +1,46 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {View, FlatList, StyleSheet, TextInput} from 'react-native';
 import PlantItem from '../components/PlantItem';
 import RoundButton from '../components/RoundButton';
 import Colors from '../theme/Colors';
-import {getUserId, getUserPlantDataFromFirebase} from '../utils/data';
-import {
-  NavigationProp,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native';
+import {getUserId} from '../utils/data';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 import EmptyList from '../components/EmptyList';
 import {useTranslation} from 'react-i18next';
 import LoadingView from '../components/LoadingView';
 import {Plant} from '../utils/models';
 import {RootParamList} from '../utils/types';
 import Fonts from '../theme/Fonts';
+import usePlantStore from '../../store/plantsStore';
 
 const PlantsList = () => {
-  const [plantData, setPlantData] = useState<Plant[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const {plants, isLoading, loadPlants} = usePlantStore(state => ({
+    plants: state.plants,
+    isLoading: state.isLoading,
+    loadPlants: state.loadPlants,
+  }));
   const [query, setQuery] = useState('');
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<RootParamList>>();
-  const userId = getUserId();
+  const userId = useMemo(() => getUserId(), []);
 
-  const filteredData = useMemo(
+  const filteredPlants = useMemo(
     () =>
-      plantData.filter(plant => {
+      plants.filter(plant => {
         return plant.name.toLowerCase().includes(query.toLowerCase());
       }),
-    [plantData, query],
+    [plants, query],
   );
 
-  // Main data fetching function
-  const getData = useCallback(async () => {
-    if (!userId) return;
-
-    try {
-      const dbData: Plant[] = await getUserPlantDataFromFirebase(userId);
-      setPlantData(dbData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setIsLoading(false);
+  const getPlantData = useCallback(() => {
+    if (userId) {
+      loadPlants(userId);
     }
-  }, [userId]);
+  }, [userId, loadPlants]);
+
+  useEffect(() => {
+    getPlantData();
+  }, [getPlantData]);
 
   const onAddPlant = () => {
     navigation.navigate('AddPlant');
@@ -55,12 +51,6 @@ const PlantsList = () => {
       navigation.navigate('PlantView', {data: item});
     },
     [navigation],
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      getData();
-    }, [getData]),
   );
 
   const renderItem = useCallback(
@@ -80,21 +70,22 @@ const PlantsList = () => {
     <View style={styles.container}>
       {isLoading ? (
         <LoadingView />
-      ) : plantData.length ? (
+      ) : plants.length ? (
         <>
           <TextInput
             placeholder={t('common.search')}
             value={query}
             onChangeText={setQuery}
             style={styles.searchInput}
+            placeholderTextColor={Colors.placeholderText}
           />
           <FlatList
-            data={filteredData}
+            data={filteredPlants}
             renderItem={renderItem}
             keyExtractor={item => item.id}
             style={styles.listContainer}
           />
-          {!filteredData.length && (
+          {!filteredPlants.length && (
             <EmptyList text={t('emptyList.noResults')} />
           )}
         </>
