@@ -14,6 +14,7 @@ interface ButtonProps {
 const Button = ({title, onPress, style, disabled}: ButtonProps) => {
   return (
     <TouchableOpacity
+      disabled={disabled}
       onPress={onPress}
       style={[styles.container, style, disabled && styles.disabledButton]}>
       <Text style={styles.text}>{title}</Text>

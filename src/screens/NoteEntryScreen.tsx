@@ -19,12 +19,21 @@ import Button from '../components/Button';
 import Fonts from '../theme/Fonts';
 import {useTranslation} from 'react-i18next';
 import {useCustomAlert} from '../hooks/useCustomAlert';
+import {
+  NavigationProp,
+  RouteProp,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {RootParamList} from '../utils/types';
 
 const screenHeight = Dimensions.get('window').height;
 
-const NoteEntry = ({navigation, route}: any) => {
+const NoteEntry = () => {
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
+  const route = useRoute<RouteProp<RootParamList, 'NoteEntry'>>();
   const {t} = useTranslation();
-  const {plantId, updateId, note} = route.params.params.data; // had to handle nested navigator, why there is params 2 times
+  const {plantId, updateId, note} = route.params.data; // had to handle nested navigator, why there is params 2 times
   const [text, setText] = useState(note);
   const {showCancelConfirmationAlert} = useCustomAlert();
 

@@ -8,11 +8,20 @@ import {doc, collection, addDoc, Timestamp} from 'firebase/firestore';
 import {db, storage} from '../../firebaseConfig';
 import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
+import {
+  useNavigation,
+  NavigationProp,
+  useRoute,
+  RouteProp,
+} from '@react-navigation/native';
+import {RootParamList} from '../utils/types';
 
-const AddPlantUpdate = ({navigation, route}: any) => {
-  const {data: plantId} = route.params.params; // had to handle nested navigator, why there is params 2 times
-
+const AddPlantUpdate = () => {
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
+  const route = useRoute<RouteProp<RootParamList, 'AddPicture'>>();
+  const plantId = route.params?.data.id;
   const userId = getUserId();
+
   if (!userId) {
     // handle error
     return;

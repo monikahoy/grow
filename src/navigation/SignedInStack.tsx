@@ -7,7 +7,7 @@ import ViewPlantScreen from '../screens/ViewPlantScreen';
 import Colors from '../theme/Colors';
 import BasicFonts from '../theme/Fonts';
 import NoteEntry from '../screens/NoteEntryScreen';
-import {Alert, Image, TouchableOpacity} from 'react-native';
+import {Image, TouchableOpacity} from 'react-native';
 import {useCustomAlert} from '../hooks/useCustomAlert';
 
 const Stack = createNativeStackNavigator();

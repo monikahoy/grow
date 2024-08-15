@@ -2,19 +2,24 @@ import React, {useCallback, useState} from 'react';
 import {View, FlatList, StyleSheet} from 'react-native';
 import PlantItem from '../components/PlantItem';
 import RoundButton from '../components/RoundButton';
-import AddPlant from './AddPlantScreen';
 import Colors from '../theme/Colors';
 import {getUserId, getUserPlantDataFromFirebase} from '../utils/data';
-import {useFocusEffect} from '@react-navigation/native';
+import {
+  NavigationProp,
+  useFocusEffect,
+  useNavigation,
+} from '@react-navigation/native';
 import EmptyList from '../components/EmptyList';
 import {useTranslation} from 'react-i18next';
 import LoadingView from '../components/LoadingView';
 import {Plant} from '../utils/models';
+import {RootParamList} from '../utils/types';
 
-const PlantsList = ({navigation}: any) => {
+const PlantsList = () => {
   const [plantData, setPlantData] = useState<Plant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const {t} = useTranslation();
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
   const userId = getUserId();
 
   // Main data fetching function
@@ -32,12 +37,12 @@ const PlantsList = ({navigation}: any) => {
   }, [userId]);
 
   const onAddPlant = () => {
-    navigation.navigate(AddPlant);
+    navigation.navigate('AddPlant');
   };
 
   const handlePressItem = useCallback(
     (item: Plant) => () => {
-      navigation.navigate('PlantView', {item});
+      navigation.navigate('PlantView', {data: item});
     },
     [navigation],
   );

@@ -5,7 +5,11 @@ import Fonts from '../theme/Fonts';
 import RoundButton from '../components/RoundButton';
 import LoadingView from '../components/LoadingView';
 import PlantUpdateItem from '../components/PlantUpdateItem';
-import {useFocusEffect} from '@react-navigation/native';
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {
   getUserId,
   getPlantUpdatesCollection,
@@ -17,15 +21,13 @@ import {useCustomAlert} from '../hooks/useCustomAlert';
 import {NavigationProp, RouteProp} from '@react-navigation/native';
 import {isSamePlantUpdateArray} from '../utils/utils';
 import {PlantUpdate} from '../utils/models';
+import {RootParamList} from '../utils/types';
 
-type PlantUpdatesScreenProps = {
-  navigation: NavigationProp<any>;
-  route: RouteProp<any>;
-};
-
-const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
+const ViewPlantScreen = () => {
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
+  const route = useRoute<RouteProp<RootParamList, 'PlantView'>>();
   const {t} = useTranslation();
-  const [data] = useState(route.params?.item);
+  const data = route.params?.data;
   const [plantUpdates, setPlantUpdates] = useState<PlantUpdate[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const {showDeletePlantAlert, showDeleteUpdateAlert} = useCustomAlert();
@@ -74,8 +76,7 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
 
   const onAddPicture = useCallback(() => {
     navigation.navigate('AddPicture', {
-      screen: 'AddPicture',
-      params: {data: plantId},
+      data: {id: plantId},
     });
   }, [plantId, navigation]);
 
@@ -83,8 +84,7 @@ const ViewPlantScreen = ({navigation, route}: PlantUpdatesScreenProps) => {
     const update = plantUpdates.find(item => item.id === updateId);
     const note = update?.noteEntry;
     navigation.navigate('NoteEntry', {
-      screen: 'NoteEntry',
-      params: {data: {plantId: plantId, updateId: updateId, note: note}},
+      data: {plantId: plantId, updateId: updateId, note: note},
     });
   };
 

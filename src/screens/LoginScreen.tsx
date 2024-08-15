@@ -8,13 +8,15 @@ import {
 import React, {useState} from 'react';
 import Button from '../components/Button';
 import TextInput from '../components/TextInput';
-import Register from './RegisterScreen';
 import {useTranslation} from 'react-i18next';
 import Colors from '../theme/Colors';
 import {auth} from '../../firebaseConfig';
 import {signInWithEmailAndPassword} from 'firebase/auth';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootParamList} from '../utils/types';
 
-const Login = ({navigation}: any) => {
+const Login = () => {
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
   const {t} = useTranslation();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -36,7 +38,7 @@ const Login = ({navigation}: any) => {
   };
 
   const onNavigateToRegister = () => {
-    navigation.navigate(Register);
+    navigation.navigate('Register');
   };
 
   return (

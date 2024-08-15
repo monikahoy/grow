@@ -2,16 +2,10 @@ import {t} from 'i18next';
 import {View, Image, Text, Pressable, StyleSheet} from 'react-native';
 import Colors from '../theme/Colors';
 import Fonts from '../theme/Fonts';
-import {Timestamp} from 'firebase/firestore';
 import {formatDate} from '../utils/utils';
+import {PlantUpdate} from '../utils/models';
 
-type PlantUpdate = {
-  id: string;
-  createdAt: Timestamp;
-  picture: {
-    url: string;
-  };
-  noteEntry?: string;
+type PlantUpdateProps = PlantUpdate & {
   showDeleteIcon: boolean;
   onAddNote: (id: string) => void;
   onDelete: (id: string) => void;
@@ -25,7 +19,7 @@ const PlantUpdateItem = ({
   showDeleteIcon = true,
   onAddNote,
   onDelete,
-}: PlantUpdate) => {
+}: PlantUpdateProps) => {
   return (
     <View style={styles.container}>
       {picture && (

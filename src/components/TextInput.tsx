@@ -24,6 +24,7 @@ const TextInput = ({
       placeholder={placeholder}
       placeholderTextColor={Colors.placeholderText}
       secureTextEntry={secureTextEntry}
+      textContentType="oneTimeCode" //temporary fix for keyboard flickering
     />
   );
 };

@@ -9,13 +9,12 @@ import {db, storage} from '../../firebaseConfig';
 import {getRandomPlantName} from '../utils/utils';
 import {getUserId} from '../utils/data';
 import Colors from '../theme/Colors';
-import {NavigationProp} from '@react-navigation/native';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {RootParamList} from '../utils/types';
 
-type AddPlantProps = {
-  navigation: NavigationProp<any>;
-};
+const AddPlant = () => {
+  const navigation = useNavigation<NavigationProp<RootParamList>>();
 
-const AddPlant = ({navigation}: AddPlantProps) => {
   const handleAddPlant = async (imageBlob: Blob) => {
     try {
       const storageRef = ref(storage, `users/plants/photos/${uuidv4()}.jpg`);
