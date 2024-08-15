@@ -7,6 +7,7 @@ import {
   query,
   orderBy,
   limit,
+  writeBatch,
 } from 'firebase/firestore';
 import {auth, db} from '../../firebaseConfig';
 import {PlantUpdate} from './models';
@@ -100,7 +101,7 @@ export const getPlantUpdatesCollection = async (
   }
 };
 
-// Function to delete a plant collection from Firestore
+// Function to get the latest update from Firestore
 export const getLatestPlantUpdate = async (
   userId: string | null,
   plantId: string | null,
@@ -144,23 +145,46 @@ export const getLatestPlantUpdate = async (
   }
 };
 
-// Function to delete a plant document in the plants collection from Firestore
-export const deletePlantDocFromFirebase = async (
+// Function to delete a plant document along with all its updates subcollection from Firestore
+export const deletePlantAndUpdatesFromFirebase = async (
   userId: string | null,
   plantId: string | null,
 ) => {
-  if (!userId) {
-    return;
-  }
-  if (!plantId) {
+  if (!userId || !plantId) {
+    console.error('User ID or Plant ID is missing');
     return;
   }
 
-  const collectionRef = doc(db, 'users', userId, 'plants', plantId);
+  // Reference to the plant document
+  const plantDocRef = doc(db, 'users', userId, 'plants', plantId);
+
+  // Reference to the updates subcollection
+  const updatesCollectionRef = collection(
+    db,
+    'users',
+    userId,
+    'plants',
+    plantId,
+    'updates',
+  );
+
   try {
-    await deleteDoc(collectionRef);
+    // Start a batch to delete documents
+    const batch = writeBatch(db);
+
+    // Delete all documents in the updates subcollection
+    const updatesSnapshot = await getDocs(updatesCollectionRef);
+    updatesSnapshot.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+
+    // Delete the plant document
+    batch.delete(plantDocRef);
+
+    // Commit the batch
+    await batch.commit();
   } catch (error) {
-    console.error('Error deleting document:', error);
+    console.error('Error deleting documents:', error);
   }
 };
 

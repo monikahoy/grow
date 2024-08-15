@@ -13,7 +13,7 @@ import {
 import {
   getUserId,
   getPlantUpdatesCollection,
-  deletePlantDocFromFirebase,
+  deletePlantAndUpdatesFromFirebase,
   deletePlantUpdateFromFirebase,
 } from '../utils/data';
 import {useTranslation} from 'react-i18next';
@@ -89,7 +89,7 @@ const ViewPlantScreen = () => {
   };
 
   const deletePlant = async () => {
-    await deletePlantDocFromFirebase(userId, plantId);
+    await deletePlantAndUpdatesFromFirebase(userId, plantId);
     navigation.navigate('Home');
   };
 
