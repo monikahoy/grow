@@ -1,5 +1,5 @@
-import React, {useCallback, useState} from 'react';
-import {View, FlatList, StyleSheet} from 'react-native';
+import React, {useCallback, useMemo, useState} from 'react';
+import {View, FlatList, StyleSheet, TextInput} from 'react-native';
 import PlantItem from '../components/PlantItem';
 import RoundButton from '../components/RoundButton';
 import Colors from '../theme/Colors';
@@ -14,13 +14,23 @@ import {useTranslation} from 'react-i18next';
 import LoadingView from '../components/LoadingView';
 import {Plant} from '../utils/models';
 import {RootParamList} from '../utils/types';
+import Fonts from '../theme/Fonts';
 
 const PlantsList = () => {
   const [plantData, setPlantData] = useState<Plant[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [query, setQuery] = useState('');
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const userId = getUserId();
+
+  const filteredData = useMemo(
+    () =>
+      plantData.filter(plant => {
+        return plant.name.toLowerCase().includes(query.toLowerCase());
+      }),
+    [plantData, query],
+  );
 
   // Main data fetching function
   const getData = useCallback(async () => {
@@ -71,14 +81,25 @@ const PlantsList = () => {
       {isLoading ? (
         <LoadingView />
       ) : plantData.length ? (
-        <FlatList
-          data={plantData}
-          renderItem={renderItem}
-          keyExtractor={item => item.id}
-          style={styles.listContainer}
-        />
+        <>
+          <TextInput
+            placeholder={t('common.search')}
+            value={query}
+            onChangeText={setQuery}
+            style={styles.searchInput}
+          />
+          <FlatList
+            data={filteredData}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+            style={styles.listContainer}
+          />
+          {!filteredData.length && (
+            <EmptyList text={t('emptyList.noResults')} />
+          )}
+        </>
       ) : (
-        <EmptyList />
+        <EmptyList text={t('emptyList.noPlants')} />
       )}
       <RoundButton onPress={onAddPlant} label={t('plantsList.ctaAddPlant')} />
     </View>
@@ -95,6 +116,14 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     marginHorizontal: 20,
+  },
+  searchInput: {
+    marginHorizontal: 20,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 8,
+    fontFamily: Fonts.bodyFont,
   },
 });
 

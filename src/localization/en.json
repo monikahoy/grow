@@ -1,6 +1,7 @@
 {
     "translation": {
       "common": {
+        "search": "Search"
       },
       "login": {
         "email": "Email",
@@ -55,7 +56,8 @@
         "show": "See Notes"
       },
       "emptyList": {
-        "text": "Start by adding new plants to your collection"
+        "noPlants": "Start by adding new plants to your collection",
+        "noResults": "No plants found, try another search"
       },
       "deletePlant": {
         "title": "Delete plant",
