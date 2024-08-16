@@ -1,5 +1,12 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {View, FlatList, StyleSheet, TextInput} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {
+  View,
+  FlatList,
+  StyleSheet,
+  TextInput,
+  Animated,
+  Button,
+} from 'react-native';
 import PlantItem from '../components/PlantItem';
 import RoundButton from '../components/RoundButton';
 import Colors from '../theme/Colors';
@@ -23,6 +30,8 @@ const PlantsList = () => {
   const {t} = useTranslation();
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const userId = useMemo(() => getUserId(), []);
+  const [showSearchBar, setShowSearchBar] = useState(true);
+  const translateY = useRef(new Animated.Value(0)).current; // show search bar when
 
   const filteredPlants = useMemo(
     () =>
@@ -66,23 +75,59 @@ const PlantsList = () => {
     [handlePressItem],
   );
 
+  // Hide the search bar on scroll
+  const hideSearchBar = () => {
+    Animated.timing(translateY, {
+      toValue: -50,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(),
+      setShowSearchBar(false);
+  };
+
+  // Show the search bar when scrolling ends, but only if near the top
+  const showSearchBarIfNearTop = (event: {
+    nativeEvent: {contentOffset: {y: any}};
+  }) => {
+    const offsetY = event.nativeEvent.contentOffset.y;
+
+    if (offsetY <= 5) {
+      // Allow a small buffer (e.g., 5px) for smoothness
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }).start(),
+        setShowSearchBar(true);
+    }
+  };
   return (
     <View style={styles.container}>
       {isLoading ? (
         <LoadingView />
       ) : plants.length ? (
         <>
-          <TextInput
-            placeholder={t('common.search')}
-            value={query}
-            onChangeText={setQuery}
-            style={styles.searchInput}
-            placeholderTextColor={Colors.placeholderText}
-          />
+          <Animated.View
+            style={{
+              height: showSearchBar ? 50 : 0,
+              transform: [{translateY: translateY}],
+            }}>
+            <>
+              <TextInput
+                placeholder={t('common.search')}
+                value={query}
+                onChangeText={setQuery}
+                style={styles.searchInput}
+                placeholderTextColor={Colors.placeholderText}
+              />
+            </>
+          </Animated.View>
           <FlatList
             data={filteredPlants}
             renderItem={renderItem}
             keyExtractor={item => item.id}
+            onScrollBeginDrag={hideSearchBar}
+            onScroll={showSearchBarIfNearTop}
             style={styles.listContainer}
           />
           {!filteredPlants.length && (
@@ -103,7 +148,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   listContainer: {
-    marginVertical: 20,
+    marginBottom: 20,
   },
   itemContainer: {
     marginHorizontal: 20,
@@ -115,6 +160,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.border,
     borderRadius: 8,
     fontFamily: Fonts.bodyFont,
+    height: '100%',
   },
 });
 
