@@ -104,6 +104,7 @@ const NoteEntry = () => {
               style={styles.textInput}
               value={text}
               placeholderTextColor={Colors.placeholderText}
+              autoFocus={!text}
             />
 
             <View style={styles.buttonContainer}>

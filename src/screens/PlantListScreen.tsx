@@ -87,6 +87,7 @@ const PlantsList = () => {
             value={query}
             onChangeText={setQuery}
             style={styles.searchInput}
+            placeholderTextColor={Colors.placeholderText}
           />
           <FlatList
             data={filteredData}
