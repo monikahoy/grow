@@ -42,10 +42,7 @@ const ViewPlantScreen = () => {
       }
       const dbData: any = await getPlantUpdatesCollection(userId, plantId);
       if (!isSamePlantUpdateArray(dbData, plantUpdates)) {
-        console.log('Data changed');
         setPlantUpdates(dbData);
-      } else {
-        console.log('Data is the same');
       }
     } catch (error) {
       console.error('Error fetching plant updates:', error);
