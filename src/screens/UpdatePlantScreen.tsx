@@ -16,13 +16,14 @@ import {
 } from '@react-navigation/native';
 import {RootParamList} from '../utils/types';
 import usePlantStore from '../../store/plantsStore';
+import {PlantUpdate} from '../utils/models';
 
 const AddPlantUpdate = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
   const route = useRoute<RouteProp<RootParamList, 'AddPicture'>>();
   const plantId = route.params?.data.id;
   const userId = getUserId();
-  const loadPlantUpdates = usePlantStore(state => state.loadPlantUpdates);
+  const addUpdate = usePlantStore(state => state.addUpdate);
 
   if (!userId) {
     // handle error
@@ -46,12 +47,20 @@ const AddPlantUpdate = () => {
       'updates',
     );
 
-    await addDoc(updatesSubcollectionRef, {
+    const newPlantRef = await addDoc(updatesSubcollectionRef, {
       createdAt: timestamp,
       picture: {url: downloadURL},
     });
 
-    loadPlantUpdates(userId, plantId);
+    const updateId = newPlantRef.id;
+
+    const newUpdate: PlantUpdate = {
+      id: updateId,
+      createdAt: timestamp,
+      picture: {url: downloadURL},
+    };
+
+    addUpdate(plantId, newUpdate);
 
     navigation.goBack();
   };

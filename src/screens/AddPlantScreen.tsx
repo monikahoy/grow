@@ -15,8 +15,8 @@ import usePlantStore from '../../store/plantsStore';
 
 const AddPlant = () => {
   const navigation = useNavigation<NavigationProp<RootParamList>>();
-  const {loadPlants} = usePlantStore(state => ({
-    loadPlants: state.loadPlants,
+  const {addPlant} = usePlantStore(state => ({
+    addPlant: state.addPlant,
   }));
 
   const handleAddPlant = async (imageBlob: Blob) => {
@@ -67,7 +67,7 @@ const AddPlant = () => {
       });
 
       // Access Zustand store and update state
-      loadPlants(userId);
+      addPlant(newPlant);
 
       // Log state directly from Zustand store
       console.log('State after addPlant:', usePlantStore.getState().plants);

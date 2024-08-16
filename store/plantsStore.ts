@@ -11,6 +11,8 @@ interface PlantState {
   isLoading: boolean;
   loadPlants: (userId: string) => Promise<void>;
   loadPlantUpdates: (userId: string, plantId: string) => Promise<void>;
+  addPlant: (plant: Plant) => void;
+  addUpdate: (plantId: string, plant: PlantUpdate) => void;
   deletePlant: (plantId: string) => void;
   deleteUpdate: (plantId: string, updateId: string) => void;
   addNoteToUpdate: (plantId: string, updateId: string, note: string) => void;
@@ -48,6 +50,17 @@ const usePlantStore = create<PlantState>(set => ({
       set({isLoading: false});
     }
   },
+  addPlant: (plant: Plant) =>
+    set(state => ({
+      plants: [...state.plants, plant],
+    })),
+  addUpdate: (plantId: string, update: PlantUpdate) =>
+    set(state => ({
+      plantUpdates: {
+        ...state.plantUpdates,
+        [plantId]: [...(state.plantUpdates[plantId] || []), update],
+      },
+    })),
   deletePlant: plantId => {
     set(state => {
       const updatedPlants = state.plants.filter(plant => plant.id !== plantId);
